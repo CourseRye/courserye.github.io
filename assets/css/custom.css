@@ -1,458 +1,1629 @@
-@charset "UTF-8";
-/*
- * 适用于 core/typora-bear.scss。
- * 所有 typora-bear 主题，只需 import 这个文件，然后修改配色方案即可。
- */
-/*
- * Default theme，适用于 core/mweb-base.scss。
- * 取值参考 chrome 默认样式：
- * https://chromium.googlesource.com/chromium/blink/+/refs/heads/main/Source/core/css/html.css
- * 所有 import "core/mweb-base.scss" 的文件都应该同时导入此变量文件。
- */
-/* color */
-/* font & line */
-/* boxing */
-/* elememts */
-/* font */
-/* header */
-/* spacing */
-/* table */
-/* default color */
-/**
- * 在 bear 的主题中，某些变量的取值和其他变量是绑定的。
- * 统一写在这里，这个文件应该在变量文件的最后被引入。
- */
-/*
- * 基准样式，相当于 reset.css，使主题在不同平台下有统一的表现。
- * 各个属性的默认值为 chrome 的默认样式，见 variables/default.scss。
- */
-:root {
-  --text-color: #222222;
-  --bg-color: #fcfcfc;
-  --side-bar-bg-color: #fcfcfc;
-  --active-file-bg-color: #fcfcfc;
-  --rawblock-edit-panel-bd: white;
-  --window-border: 0 solid #fcfcfc;
-  --control-text-color: #222222;
-  --primary-color: #e06e73;
-  --primary-btn-border-color: #e06e73;
-  --active-file-border-color: #e06e73;
-  --primary-btn-text-color: #e06e73;
-  --item-hover-text-color: #e06e73;
-  --meta-content-color: #e06e73;
-  --search-select-text-color: #e06e73;
-  --heading-char-color: #e06e73;
-  /* Mermaid diagrams*/
-  --mermaid-theme: default;
+const colors = require('tailwindcss/colors')
+
+const round = (num) =>
+  num
+    .toFixed(7)
+    .replace(/(\.[0-9]+?)0+$/, '$1')
+    .replace(/\.0$/, '')
+const rem = (px) => `${round(px / 16)}rem`
+const em = (px, base) => `${round(px / base)}em`
+const hexToRgb = (hex) => {
+  hex = hex.replace('#', '')
+  hex = hex.length === 3 ? hex.replace(/./g, '$&$&') : hex
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  return `${r} ${g} ${b}`
 }
 
-#write {
-  line-height: 1.68;
-  -webkit-text-size-adjust: 100%;
-  max-width: 46rem;
-  margin: 0px auto;
-  padding: 1.6rem 3.2rem;
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, Segoe UI, PingFang SC, Microsoft Yahei, Hiragino Sans GB, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  font-size: 16px;
-  color: #222222;
-  /* spacing */
-  /* block */
-  /* list */
-  /* inline */
-  /* table */
-  /* code block */
-}
-#write * {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-#write > *:first-child {
-  margin-top: 0 !important;
-}
-#write > *:last-child {
-  margin-top: 0 !important;
-}
-#write p, #write details, #write dl, #write ol, #write ul, #write xmp, #write plaintext, #write listing, #write blockquote, #write table, #write figure, #write hr {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-#write h1 {
-  font-size: 26px;
-  font-weight: bold;
-  margin-top: 26px;
-  margin-bottom: 10px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write h2 {
-  font-size: 22px;
-  font-weight: bold;
-  margin-top: 22px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write h3 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 20px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write h4 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 18px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write h5 {
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 16px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write h6 {
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 16px;
-  margin-bottom: 8px;
-  margin-left: 0;
-  margin-right: 0;
-}
-#write p {
-  margin-left: 0;
-  margin-right: 0;
-}
-#write pre, #write xmp, #write plaintext, #write listing {
-  font-family: var(--monospace);
-}
-#write blockquote > :first-child {
-  margin-top: 0;
-}
-#write blockquote > :last-child {
-  margin-bottom: 0;
-}
-#write hr {
-  border-style: inset;
-  border-width: 1px;
-}
-#write img {
-  max-width: 100%;
-  height: auto;
-}
-#write li {
-  word-wrap: break-all;
-}
-#write li + li {
-  margin-top: 4px;
-}
-#write ul ul, #write ol ul, #write ul ol, #write ol ol {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-#write .task-list-item {
-  list-style-type: none;
-}
-#write a {
-  color: #de4c4f;
-  text-decoration: underline;
-}
-#write a img {
-  border: none;
-}
-#write b, #write strong {
-  font-weight: bold;
-}
-#write i, #write cite, #write em, #write var, #write address, #write dfn {
-  font-style: italic;
-}
-#write code, #write kbd, #write tt, #write samp {
-  font-family: var(--monospace);
-}
-#write mark {
-  color: #222222;
-  padding: 0.2em 0;
-  background-color: #fcffc0;
-}
-#write del, #write s {
-  color: #525252;
-}
-#write table {
-  color: #424242;
-  border-collapse: collapse;
-  background-color: white;
-  border-spacing: 2px;
-  font-size: 1em;
-}
-#write th, #write td {
-  border-color: #bfbfbf;
-  border-width: 1px;
-  border-style: solid;
-}
-#write th {
-  padding: 8px 8px;
-  font-size: 1em;
-  font-weight: 500;
-}
-#write td {
-  padding: 8px 8px;
-  font-size: 1em;
-  font-weight: normal;
-}
-#write pre.md-fences,
-#write pre.md-meta-block,
-#write .md-rawblock-control:not(.md-rawblock-tooltip) .md-rawblock-input {
-  border-radius: 3px;
-  border: 1px solid #bfbfbf;
-  padding: 10px;
-  background-color: white;
-}
-#write .CodeMirror div.CodeMirror-cursor {
-  border-color: #222222;
-}
-#write .md-math-block, #write .md-rawblock {
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
-#write .md-rawblock > .md-rawblock-tooltip {
-  background-color: white;
-  transition: 0.5s;
-  display: block;
-  visibility: hidden;
-  opacity: 0;
-}
-#write .md-rawblock:hover > .md-rawblock-tooltip {
-  transition: 0.5s;
-  visibility: visible;
-  opacity: 1;
-  animation: none;
-}
-#write .md-rawblock-control:not(.md-rawblock-tooltip) {
-  padding-left: 0px;
-  padding-right: 0px;
+let defaultModifiers = {
+  sm: {
+    css: [
+      {
+        fontSize: rem(14),
+        lineHeight: round(24 / 14),
+        p: {
+          marginTop: em(16, 14),
+          marginBottom: em(16, 14),
+        },
+        '[class~="lead"]': {
+          fontSize: em(18, 14),
+          lineHeight: round(28 / 18),
+          marginTop: em(16, 18),
+          marginBottom: em(16, 18),
+        },
+        blockquote: {
+          marginTop: em(24, 18),
+          marginBottom: em(24, 18),
+          paddingLeft: em(20, 18),
+        },
+        h1: {
+          fontSize: em(30, 14),
+          marginTop: '0',
+          marginBottom: em(24, 30),
+          lineHeight: round(36 / 30),
+        },
+        h2: {
+          fontSize: em(20, 14),
+          marginTop: em(32, 20),
+          marginBottom: em(16, 20),
+          lineHeight: round(28 / 20),
+        },
+        h3: {
+          fontSize: em(18, 14),
+          marginTop: em(28, 18),
+          marginBottom: em(8, 18),
+          lineHeight: round(28 / 18),
+        },
+        h4: {
+          marginTop: em(20, 14),
+          marginBottom: em(8, 14),
+          lineHeight: round(20 / 14),
+        },
+        img: {
+          marginTop: em(24, 14),
+          marginBottom: em(24, 14),
+        },
+        picture: {
+          marginTop: em(24, 14),
+          marginBottom: em(24, 14),
+        },
+        'picture > img': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        video: {
+          marginTop: em(24, 14),
+          marginBottom: em(24, 14),
+        },
+        kbd: {
+          fontSize: em(12, 14),
+          borderRadius: rem(5),
+          paddingTop: em(2, 14),
+          paddingRight: em(5, 14),
+          paddingBottom: em(2, 14),
+          paddingLeft: em(5, 14),
+        },
+        code: {
+          fontSize: em(12, 14),
+        },
+        'h2 code': {
+          fontSize: em(18, 20),
+        },
+        'h3 code': {
+          fontSize: em(16, 18),
+        },
+        pre: {
+          fontSize: em(12, 14),
+          lineHeight: round(20 / 12),
+          marginTop: em(20, 12),
+          marginBottom: em(20, 12),
+          borderRadius: rem(4),
+          paddingTop: em(8, 12),
+          paddingRight: em(12, 12),
+          paddingBottom: em(8, 12),
+          paddingLeft: em(12, 12),
+        },
+        ol: {
+          marginTop: em(16, 14),
+          marginBottom: em(16, 14),
+          paddingLeft: em(22, 14),
+        },
+        ul: {
+          marginTop: em(16, 14),
+          marginBottom: em(16, 14),
+          paddingLeft: em(22, 14),
+        },
+        li: {
+          marginTop: em(4, 14),
+          marginBottom: em(4, 14),
+        },
+        'ol > li': {
+          paddingLeft: em(6, 14),
+        },
+        'ul > li': {
+          paddingLeft: em(6, 14),
+        },
+        '> ul > li p': {
+          marginTop: em(8, 14),
+          marginBottom: em(8, 14),
+        },
+        '> ul > li > *:first-child': {
+          marginTop: em(16, 14),
+        },
+        '> ul > li > *:last-child': {
+          marginBottom: em(16, 14),
+        },
+        '> ol > li > *:first-child': {
+          marginTop: em(16, 14),
+        },
+        '> ol > li > *:last-child': {
+          marginBottom: em(16, 14),
+        },
+        'ul ul, ul ol, ol ul, ol ol': {
+          marginTop: em(8, 14),
+          marginBottom: em(8, 14),
+        },
+        dl: {
+          marginTop: em(16, 14),
+          marginBottom: em(16, 14),
+        },
+        dt: {
+          marginTop: em(16, 14),
+        },
+        dd: {
+          marginTop: em(4, 14),
+          paddingLeft: em(22, 14),
+        },
+        hr: {
+          marginTop: em(40, 14),
+          marginBottom: em(40, 14),
+        },
+        'hr + *': {
+          marginTop: '0',
+        },
+        'h2 + *': {
+          marginTop: '0',
+        },
+        'h3 + *': {
+          marginTop: '0',
+        },
+        'h4 + *': {
+          marginTop: '0',
+        },
+        table: {
+          fontSize: em(12, 14),
+          lineHeight: round(18 / 12),
+        },
+        'thead th': {
+          paddingRight: em(12, 12),
+          paddingBottom: em(8, 12),
+          paddingLeft: em(12, 12),
+        },
+        'thead th:first-child': {
+          paddingLeft: '0',
+        },
+        'thead th:last-child': {
+          paddingRight: '0',
+        },
+        'tbody td, tfoot td': {
+          paddingTop: em(8, 12),
+          paddingRight: em(12, 12),
+          paddingBottom: em(8, 12),
+          paddingLeft: em(12, 12),
+        },
+        'tbody td:first-child, tfoot td:first-child': {
+          paddingLeft: '0',
+        },
+        'tbody td:last-child, tfoot td:last-child': {
+          paddingRight: '0',
+        },
+        figure: {
+          marginTop: em(24, 14),
+          marginBottom: em(24, 14),
+        },
+        'figure > *': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        figcaption: {
+          fontSize: em(12, 14),
+          lineHeight: round(16 / 12),
+          marginTop: em(8, 12),
+        },
+      },
+      {
+        '> :first-child': {
+          marginTop: '0',
+        },
+        '> :last-child': {
+          marginBottom: '0',
+        },
+      },
+    ],
+  },
+  base: {
+    css: [
+      {
+        fontSize: rem(16),
+        lineHeight: round(28 / 16),
+        p: {
+          marginTop: em(20, 16),
+          marginBottom: em(20, 16),
+        },
+        '[class~="lead"]': {
+          fontSize: em(20, 16),
+          lineHeight: round(32 / 20),
+          marginTop: em(24, 20),
+          marginBottom: em(24, 20),
+        },
+        blockquote: {
+          marginTop: em(32, 20),
+          marginBottom: em(32, 20),
+          paddingLeft: em(20, 20),
+        },
+        h1: {
+          fontSize: em(36, 16),
+          marginTop: '0',
+          marginBottom: em(32, 36),
+          lineHeight: round(40 / 36),
+        },
+        h2: {
+          fontSize: em(24, 16),
+          marginTop: em(48, 24),
+          marginBottom: em(24, 24),
+          lineHeight: round(32 / 24),
+        },
+        h3: {
+          fontSize: em(20, 16),
+          marginTop: em(32, 20),
+          marginBottom: em(12, 20),
+          lineHeight: round(32 / 20),
+        },
+        h4: {
+          marginTop: em(24, 16),
+          marginBottom: em(8, 16),
+          lineHeight: round(24 / 16),
+        },
+        img: {
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+        },
+        picture: {
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+        },
+        'picture > img': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        video: {
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+        },
+        kbd: {
+          fontSize: em(14, 16),
+          borderRadius: rem(5),
+          paddingTop: em(3, 16),
+          paddingRight: em(6, 16),
+          paddingBottom: em(3, 16),
+          paddingLeft: em(6, 16),
+        },
+        code: {
+          fontSize: em(14, 16),
+        },
+        'h2 code': {
+          fontSize: em(21, 24),
+        },
+        'h3 code': {
+          fontSize: em(18, 20),
+        },
+        pre: {
+          fontSize: em(14, 16),
+          lineHeight: round(24 / 14),
+          marginTop: em(24, 14),
+          marginBottom: em(24, 14),
+          borderRadius: rem(6),
+          paddingTop: em(12, 14),
+          paddingRight: em(16, 14),
+          paddingBottom: em(12, 14),
+          paddingLeft: em(16, 14),
+        },
+        ol: {
+          marginTop: em(20, 16),
+          marginBottom: em(20, 16),
+          paddingLeft: em(26, 16),
+        },
+        ul: {
+          marginTop: em(20, 16),
+          marginBottom: em(20, 16),
+          paddingLeft: em(26, 16),
+        },
+        li: {
+          marginTop: em(8, 16),
+          marginBottom: em(8, 16),
+        },
+        'ol > li': {
+          paddingLeft: em(6, 16),
+        },
+        'ul > li': {
+          paddingLeft: em(6, 16),
+        },
+        '> ul > li p': {
+          marginTop: em(12, 16),
+          marginBottom: em(12, 16),
+        },
+        '> ul > li > *:first-child': {
+          marginTop: em(20, 16),
+        },
+        '> ul > li > *:last-child': {
+          marginBottom: em(20, 16),
+        },
+        '> ol > li > *:first-child': {
+          marginTop: em(20, 16),
+        },
+        '> ol > li > *:last-child': {
+          marginBottom: em(20, 16),
+        },
+        'ul ul, ul ol, ol ul, ol ol': {
+          marginTop: em(12, 16),
+          marginBottom: em(12, 16),
+        },
+        dl: {
+          marginTop: em(20, 16),
+          marginBottom: em(20, 16),
+        },
+        dt: {
+          marginTop: em(20, 16),
+        },
+        dd: {
+          marginTop: em(8, 16),
+          paddingLeft: em(26, 16),
+        },
+        hr: {
+          marginTop: em(48, 16),
+          marginBottom: em(48, 16),
+        },
+        'hr + *': {
+          marginTop: '0',
+        },
+        'h2 + *': {
+          marginTop: '0',
+        },
+        'h3 + *': {
+          marginTop: '0',
+        },
+        'h4 + *': {
+          marginTop: '0',
+        },
+        table: {
+          fontSize: em(14, 16),
+          lineHeight: round(24 / 14),
+        },
+        'thead th': {
+          paddingRight: em(8, 14),
+          paddingBottom: em(8, 14),
+          paddingLeft: em(8, 14),
+        },
+        'thead th:first-child': {
+          paddingLeft: '0',
+        },
+        'thead th:last-child': {
+          paddingRight: '0',
+        },
+        'tbody td, tfoot td': {
+          paddingTop: em(8, 14),
+          paddingRight: em(8, 14),
+          paddingBottom: em(8, 14),
+          paddingLeft: em(8, 14),
+        },
+        'tbody td:first-child, tfoot td:first-child': {
+          paddingLeft: '0',
+        },
+        'tbody td:last-child, tfoot td:last-child': {
+          paddingRight: '0',
+        },
+        figure: {
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+        },
+        'figure > *': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        figcaption: {
+          fontSize: em(14, 16),
+          lineHeight: round(20 / 14),
+          marginTop: em(12, 14),
+        },
+      },
+      {
+        '> :first-child': {
+          marginTop: '0',
+        },
+        '> :last-child': {
+          marginBottom: '0',
+        },
+      },
+    ],
+  },
+  lg: {
+    css: [
+      {
+        fontSize: rem(18),
+        lineHeight: round(32 / 18),
+        p: {
+          marginTop: em(24, 18),
+          marginBottom: em(24, 18),
+        },
+        '[class~="lead"]': {
+          fontSize: em(22, 18),
+          lineHeight: round(32 / 22),
+          marginTop: em(24, 22),
+          marginBottom: em(24, 22),
+        },
+        blockquote: {
+          marginTop: em(40, 24),
+          marginBottom: em(40, 24),
+          paddingLeft: em(24, 24),
+        },
+        h1: {
+          fontSize: em(48, 18),
+          marginTop: '0',
+          marginBottom: em(40, 48),
+          lineHeight: round(48 / 48),
+        },
+        h2: {
+          fontSize: em(30, 18),
+          marginTop: em(56, 30),
+          marginBottom: em(32, 30),
+          lineHeight: round(40 / 30),
+        },
+        h3: {
+          fontSize: em(24, 18),
+          marginTop: em(40, 24),
+          marginBottom: em(16, 24),
+          lineHeight: round(36 / 24),
+        },
+        h4: {
+          marginTop: em(32, 18),
+          marginBottom: em(8, 18),
+          lineHeight: round(28 / 18),
+        },
+        img: {
+          marginTop: em(32, 18),
+          marginBottom: em(32, 18),
+        },
+        picture: {
+          marginTop: em(32, 18),
+          marginBottom: em(32, 18),
+        },
+        'picture > img': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        video: {
+          marginTop: em(32, 18),
+          marginBottom: em(32, 18),
+        },
+        kbd: {
+          fontSize: em(16, 18),
+          borderRadius: rem(5),
+          paddingTop: em(4, 18),
+          paddingRight: em(8, 18),
+          paddingBottom: em(4, 18),
+          paddingLeft: em(8, 18),
+        },
+        code: {
+          fontSize: em(16, 18),
+        },
+        'h2 code': {
+          fontSize: em(26, 30),
+        },
+        'h3 code': {
+          fontSize: em(21, 24),
+        },
+        pre: {
+          fontSize: em(16, 18),
+          lineHeight: round(28 / 16),
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+          borderRadius: rem(6),
+          paddingTop: em(16, 16),
+          paddingRight: em(24, 16),
+          paddingBottom: em(16, 16),
+          paddingLeft: em(24, 16),
+        },
+        ol: {
+          marginTop: em(24, 18),
+          marginBottom: em(24, 18),
+          paddingLeft: em(28, 18),
+        },
+        ul: {
+          marginTop: em(24, 18),
+          marginBottom: em(24, 18),
+          paddingLeft: em(28, 18),
+        },
+        li: {
+          marginTop: em(12, 18),
+          marginBottom: em(12, 18),
+        },
+        'ol > li': {
+          paddingLeft: em(8, 18),
+        },
+        'ul > li': {
+          paddingLeft: em(8, 18),
+        },
+        '> ul > li p': {
+          marginTop: em(16, 18),
+          marginBottom: em(16, 18),
+        },
+        '> ul > li > *:first-child': {
+          marginTop: em(24, 18),
+        },
+        '> ul > li > *:last-child': {
+          marginBottom: em(24, 18),
+        },
+        '> ol > li > *:first-child': {
+          marginTop: em(24, 18),
+        },
+        '> ol > li > *:last-child': {
+          marginBottom: em(24, 18),
+        },
+        'ul ul, ul ol, ol ul, ol ol': {
+          marginTop: em(16, 18),
+          marginBottom: em(16, 18),
+        },
+        dl: {
+          marginTop: em(24, 18),
+          marginBottom: em(24, 18),
+        },
+        dt: {
+          marginTop: em(24, 18),
+        },
+        dd: {
+          marginTop: em(12, 18),
+          paddingLeft: em(28, 18),
+        },
+        hr: {
+          marginTop: em(56, 18),
+          marginBottom: em(56, 18),
+        },
+        'hr + *': {
+          marginTop: '0',
+        },
+        'h2 + *': {
+          marginTop: '0',
+        },
+        'h3 + *': {
+          marginTop: '0',
+        },
+        'h4 + *': {
+          marginTop: '0',
+        },
+        table: {
+          fontSize: em(16, 18),
+          lineHeight: round(24 / 16),
+        },
+        'thead th': {
+          paddingRight: em(12, 16),
+          paddingBottom: em(12, 16),
+          paddingLeft: em(12, 16),
+        },
+        'thead th:first-child': {
+          paddingLeft: '0',
+        },
+        'thead th:last-child': {
+          paddingRight: '0',
+        },
+        'tbody td, tfoot td': {
+          paddingTop: em(12, 16),
+          paddingRight: em(12, 16),
+          paddingBottom: em(12, 16),
+          paddingLeft: em(12, 16),
+        },
+        'tbody td:first-child, tfoot td:first-child': {
+          paddingLeft: '0',
+        },
+        'tbody td:last-child, tfoot td:last-child': {
+          paddingRight: '0',
+        },
+        figure: {
+          marginTop: em(32, 18),
+          marginBottom: em(32, 18),
+        },
+        'figure > *': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        figcaption: {
+          fontSize: em(16, 18),
+          lineHeight: round(24 / 16),
+          marginTop: em(16, 16),
+        },
+      },
+      {
+        '> :first-child': {
+          marginTop: '0',
+        },
+        '> :last-child': {
+          marginBottom: '0',
+        },
+      },
+    ],
+  },
+  xl: {
+    css: [
+      {
+        fontSize: rem(20),
+        lineHeight: round(36 / 20),
+        p: {
+          marginTop: em(24, 20),
+          marginBottom: em(24, 20),
+        },
+        '[class~="lead"]': {
+          fontSize: em(24, 20),
+          lineHeight: round(36 / 24),
+          marginTop: em(24, 24),
+          marginBottom: em(24, 24),
+        },
+        blockquote: {
+          marginTop: em(48, 30),
+          marginBottom: em(48, 30),
+          paddingLeft: em(32, 30),
+        },
+        h1: {
+          fontSize: em(56, 20),
+          marginTop: '0',
+          marginBottom: em(48, 56),
+          lineHeight: round(56 / 56),
+        },
+        h2: {
+          fontSize: em(36, 20),
+          marginTop: em(56, 36),
+          marginBottom: em(32, 36),
+          lineHeight: round(40 / 36),
+        },
+        h3: {
+          fontSize: em(30, 20),
+          marginTop: em(48, 30),
+          marginBottom: em(20, 30),
+          lineHeight: round(40 / 30),
+        },
+        h4: {
+          marginTop: em(36, 20),
+          marginBottom: em(12, 20),
+          lineHeight: round(32 / 20),
+        },
+        img: {
+          marginTop: em(40, 20),
+          marginBottom: em(40, 20),
+        },
+        picture: {
+          marginTop: em(40, 20),
+          marginBottom: em(40, 20),
+        },
+        'picture > img': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        video: {
+          marginTop: em(40, 20),
+          marginBottom: em(40, 20),
+        },
+        kbd: {
+          fontSize: em(18, 20),
+          borderRadius: rem(5),
+          paddingTop: em(5, 20),
+          paddingRight: em(8, 20),
+          paddingBottom: em(5, 20),
+          paddingLeft: em(8, 20),
+        },
+        code: {
+          fontSize: em(18, 20),
+        },
+        'h2 code': {
+          fontSize: em(31, 36),
+        },
+        'h3 code': {
+          fontSize: em(27, 30),
+        },
+        pre: {
+          fontSize: em(18, 20),
+          lineHeight: round(32 / 18),
+          marginTop: em(36, 18),
+          marginBottom: em(36, 18),
+          borderRadius: rem(8),
+          paddingTop: em(20, 18),
+          paddingRight: em(24, 18),
+          paddingBottom: em(20, 18),
+          paddingLeft: em(24, 18),
+        },
+        ol: {
+          marginTop: em(24, 20),
+          marginBottom: em(24, 20),
+          paddingLeft: em(32, 20),
+        },
+        ul: {
+          marginTop: em(24, 20),
+          marginBottom: em(24, 20),
+          paddingLeft: em(32, 20),
+        },
+        li: {
+          marginTop: em(12, 20),
+          marginBottom: em(12, 20),
+        },
+        'ol > li': {
+          paddingLeft: em(8, 20),
+        },
+        'ul > li': {
+          paddingLeft: em(8, 20),
+        },
+        '> ul > li p': {
+          marginTop: em(16, 20),
+          marginBottom: em(16, 20),
+        },
+        '> ul > li > *:first-child': {
+          marginTop: em(24, 20),
+        },
+        '> ul > li > *:last-child': {
+          marginBottom: em(24, 20),
+        },
+        '> ol > li > *:first-child': {
+          marginTop: em(24, 20),
+        },
+        '> ol > li > *:last-child': {
+          marginBottom: em(24, 20),
+        },
+        'ul ul, ul ol, ol ul, ol ol': {
+          marginTop: em(16, 20),
+          marginBottom: em(16, 20),
+        },
+        dl: {
+          marginTop: em(24, 20),
+          marginBottom: em(24, 20),
+        },
+        dt: {
+          marginTop: em(24, 20),
+        },
+        dd: {
+          marginTop: em(12, 20),
+          paddingLeft: em(32, 20),
+        },
+        hr: {
+          marginTop: em(56, 20),
+          marginBottom: em(56, 20),
+        },
+        'hr + *': {
+          marginTop: '0',
+        },
+        'h2 + *': {
+          marginTop: '0',
+        },
+        'h3 + *': {
+          marginTop: '0',
+        },
+        'h4 + *': {
+          marginTop: '0',
+        },
+        table: {
+          fontSize: em(18, 20),
+          lineHeight: round(28 / 18),
+        },
+        'thead th': {
+          paddingRight: em(12, 18),
+          paddingBottom: em(16, 18),
+          paddingLeft: em(12, 18),
+        },
+        'thead th:first-child': {
+          paddingLeft: '0',
+        },
+        'thead th:last-child': {
+          paddingRight: '0',
+        },
+        'tbody td, tfoot td': {
+          paddingTop: em(16, 18),
+          paddingRight: em(12, 18),
+          paddingBottom: em(16, 18),
+          paddingLeft: em(12, 18),
+        },
+        'tbody td:first-child, tfoot td:first-child': {
+          paddingLeft: '0',
+        },
+        'tbody td:last-child, tfoot td:last-child': {
+          paddingRight: '0',
+        },
+        figure: {
+          marginTop: em(40, 20),
+          marginBottom: em(40, 20),
+        },
+        'figure > *': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        figcaption: {
+          fontSize: em(18, 20),
+          lineHeight: round(28 / 18),
+          marginTop: em(18, 18),
+        },
+      },
+      {
+        '> :first-child': {
+          marginTop: '0',
+        },
+        '> :last-child': {
+          marginBottom: '0',
+        },
+      },
+    ],
+  },
+  '2xl': {
+    css: [
+      {
+        fontSize: rem(24),
+        lineHeight: round(40 / 24),
+        p: {
+          marginTop: em(32, 24),
+          marginBottom: em(32, 24),
+        },
+        '[class~="lead"]': {
+          fontSize: em(30, 24),
+          lineHeight: round(44 / 30),
+          marginTop: em(32, 30),
+          marginBottom: em(32, 30),
+        },
+        blockquote: {
+          marginTop: em(64, 36),
+          marginBottom: em(64, 36),
+          paddingLeft: em(40, 36),
+        },
+        h1: {
+          fontSize: em(64, 24),
+          marginTop: '0',
+          marginBottom: em(56, 64),
+          lineHeight: round(64 / 64),
+        },
+        h2: {
+          fontSize: em(48, 24),
+          marginTop: em(72, 48),
+          marginBottom: em(40, 48),
+          lineHeight: round(52 / 48),
+        },
+        h3: {
+          fontSize: em(36, 24),
+          marginTop: em(56, 36),
+          marginBottom: em(24, 36),
+          lineHeight: round(44 / 36),
+        },
+        h4: {
+          marginTop: em(40, 24),
+          marginBottom: em(16, 24),
+          lineHeight: round(36 / 24),
+        },
+        img: {
+          marginTop: em(48, 24),
+          marginBottom: em(48, 24),
+        },
+        picture: {
+          marginTop: em(48, 24),
+          marginBottom: em(48, 24),
+        },
+        'picture > img': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        video: {
+          marginTop: em(48, 24),
+          marginBottom: em(48, 24),
+        },
+        kbd: {
+          fontSize: em(20, 24),
+          borderRadius: rem(6),
+          paddingTop: em(6, 24),
+          paddingRight: em(8, 24),
+          paddingBottom: em(6, 24),
+          paddingLeft: em(8, 24),
+        },
+        code: {
+          fontSize: em(20, 24),
+        },
+        'h2 code': {
+          fontSize: em(42, 48),
+        },
+        'h3 code': {
+          fontSize: em(32, 36),
+        },
+        pre: {
+          fontSize: em(20, 24),
+          lineHeight: round(36 / 20),
+          marginTop: em(40, 20),
+          marginBottom: em(40, 20),
+          borderRadius: rem(8),
+          paddingTop: em(24, 20),
+          paddingRight: em(32, 20),
+          paddingBottom: em(24, 20),
+          paddingLeft: em(32, 20),
+        },
+        ol: {
+          marginTop: em(32, 24),
+          marginBottom: em(32, 24),
+          paddingLeft: em(38, 24),
+        },
+        ul: {
+          marginTop: em(32, 24),
+          marginBottom: em(32, 24),
+          paddingLeft: em(38, 24),
+        },
+        li: {
+          marginTop: em(12, 24),
+          marginBottom: em(12, 24),
+        },
+        'ol > li': {
+          paddingLeft: em(10, 24),
+        },
+        'ul > li': {
+          paddingLeft: em(10, 24),
+        },
+        '> ul > li p': {
+          marginTop: em(20, 24),
+          marginBottom: em(20, 24),
+        },
+        '> ul > li > *:first-child': {
+          marginTop: em(32, 24),
+        },
+        '> ul > li > *:last-child': {
+          marginBottom: em(32, 24),
+        },
+        '> ol > li > *:first-child': {
+          marginTop: em(32, 24),
+        },
+        '> ol > li > *:last-child': {
+          marginBottom: em(32, 24),
+        },
+        'ul ul, ul ol, ol ul, ol ol': {
+          marginTop: em(16, 24),
+          marginBottom: em(16, 24),
+        },
+        dl: {
+          marginTop: em(32, 24),
+          marginBottom: em(32, 24),
+        },
+        dt: {
+          marginTop: em(32, 24),
+        },
+        dd: {
+          marginTop: em(12, 24),
+          paddingLeft: em(38, 24),
+        },
+        hr: {
+          marginTop: em(72, 24),
+          marginBottom: em(72, 24),
+        },
+        'hr + *': {
+          marginTop: '0',
+        },
+        'h2 + *': {
+          marginTop: '0',
+        },
+        'h3 + *': {
+          marginTop: '0',
+        },
+        'h4 + *': {
+          marginTop: '0',
+        },
+        table: {
+          fontSize: em(20, 24),
+          lineHeight: round(28 / 20),
+        },
+        'thead th': {
+          paddingRight: em(12, 20),
+          paddingBottom: em(16, 20),
+          paddingLeft: em(12, 20),
+        },
+        'thead th:first-child': {
+          paddingLeft: '0',
+        },
+        'thead th:last-child': {
+          paddingRight: '0',
+        },
+        'tbody td, tfoot td': {
+          paddingTop: em(16, 20),
+          paddingRight: em(12, 20),
+          paddingBottom: em(16, 20),
+          paddingLeft: em(12, 20),
+        },
+        'tbody td:first-child, tfoot td:first-child': {
+          paddingLeft: '0',
+        },
+        'tbody td:last-child, tfoot td:last-child': {
+          paddingRight: '0',
+        },
+        figure: {
+          marginTop: em(48, 24),
+          marginBottom: em(48, 24),
+        },
+        'figure > *': {
+          marginTop: '0',
+          marginBottom: '0',
+        },
+        figcaption: {
+          fontSize: em(20, 24),
+          lineHeight: round(32 / 20),
+          marginTop: em(20, 20),
+        },
+      },
+      {
+        '> :first-child': {
+          marginTop: '0',
+        },
+        '> :last-child': {
+          marginBottom: '0',
+        },
+      },
+    ],
+  },
+
+  // Gray color themes
+
+  slate: {
+    css: {
+      '--tw-prose-body': colors.slate[700],
+      '--tw-prose-headings': colors.slate[900],
+      '--tw-prose-lead': colors.slate[600],
+      '--tw-prose-links': colors.slate[900],
+      '--tw-prose-bold': colors.slate[900],
+      '--tw-prose-counters': colors.slate[500],
+      '--tw-prose-bullets': colors.slate[300],
+      '--tw-prose-hr': colors.slate[200],
+      '--tw-prose-quotes': colors.slate[900],
+      '--tw-prose-quote-borders': colors.slate[200],
+      '--tw-prose-captions': colors.slate[500],
+      '--tw-prose-kbd': colors.slate[900],
+      '--tw-prose-kbd-shadows': hexToRgb(colors.slate[900]),
+      '--tw-prose-code': colors.slate[900],
+      '--tw-prose-pre-code': colors.slate[200],
+      '--tw-prose-pre-bg': colors.slate[800],
+      '--tw-prose-th-borders': colors.slate[300],
+      '--tw-prose-td-borders': colors.slate[200],
+      '--tw-prose-invert-body': colors.slate[300],
+      '--tw-prose-invert-headings': colors.white,
+      '--tw-prose-invert-lead': colors.slate[400],
+      '--tw-prose-invert-links': colors.white,
+      '--tw-prose-invert-bold': colors.white,
+      '--tw-prose-invert-counters': colors.slate[400],
+      '--tw-prose-invert-bullets': colors.slate[600],
+      '--tw-prose-invert-hr': colors.slate[700],
+      '--tw-prose-invert-quotes': colors.slate[100],
+      '--tw-prose-invert-quote-borders': colors.slate[700],
+      '--tw-prose-invert-captions': colors.slate[400],
+      '--tw-prose-invert-kbd': colors.white,
+      '--tw-prose-invert-kbd-shadows': hexToRgb(colors.white),
+      '--tw-prose-invert-code': colors.white,
+      '--tw-prose-invert-pre-code': colors.slate[300],
+      '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
+      '--tw-prose-invert-th-borders': colors.slate[600],
+      '--tw-prose-invert-td-borders': colors.slate[700],
+    },
+  },
+
+  gray: {
+    css: {
+      '--tw-prose-body': colors.gray[700],
+      '--tw-prose-headings': colors.gray[900],
+      '--tw-prose-lead': colors.gray[600],
+      '--tw-prose-links': colors.gray[900],
+      '--tw-prose-bold': colors.gray[900],
+      '--tw-prose-counters': colors.gray[500],
+      '--tw-prose-bullets': colors.gray[300],
+      '--tw-prose-hr': colors.gray[200],
+      '--tw-prose-quotes': colors.gray[900],
+      '--tw-prose-quote-borders': colors.gray[200],
+      '--tw-prose-captions': colors.gray[500],
+      '--tw-prose-kbd': colors.gray[900],
+      '--tw-prose-kbd-shadows': hexToRgb(colors.gray[900]),
+      '--tw-prose-code': colors.gray[900],
+      '--tw-prose-pre-code': colors.gray[200],
+      '--tw-prose-pre-bg': colors.gray[800],
+      '--tw-prose-th-borders': colors.gray[300],
+      '--tw-prose-td-borders': colors.gray[200],
+      '--tw-prose-invert-body': colors.gray[300],
+      '--tw-prose-invert-headings': colors.white,
+      '--tw-prose-invert-lead': colors.gray[400],
+      '--tw-prose-invert-links': colors.white,
+      '--tw-prose-invert-bold': colors.white,
+      '--tw-prose-invert-counters': colors.gray[400],
+      '--tw-prose-invert-bullets': colors.gray[600],
+      '--tw-prose-invert-hr': colors.gray[700],
+      '--tw-prose-invert-quotes': colors.gray[100],
+      '--tw-prose-invert-quote-borders': colors.gray[700],
+      '--tw-prose-invert-captions': colors.gray[400],
+      '--tw-prose-invert-kbd': colors.white,
+      '--tw-prose-invert-kbd-shadows': hexToRgb(colors.white),
+      '--tw-prose-invert-code': colors.white,
+      '--tw-prose-invert-pre-code': colors.gray[300],
+      '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
+      '--tw-prose-invert-th-borders': colors.gray[600],
+      '--tw-prose-invert-td-borders': colors.gray[700],
+    },
+  },
+
+  zinc: {
+    css: {
+      '--tw-prose-body': colors.zinc[700],
+      '--tw-prose-headings': colors.zinc[900],
+      '--tw-prose-lead': colors.zinc[600],
+      '--tw-prose-links': colors.zinc[900],
+      '--tw-prose-bold': colors.zinc[900],
+      '--tw-prose-counters': colors.zinc[500],
+      '--tw-prose-bullets': colors.zinc[300],
+      '--tw-prose-hr': colors.zinc[200],
+      '--tw-prose-quotes': colors.zinc[900],
+      '--tw-prose-quote-borders': colors.zinc[200],
+      '--tw-prose-captions': colors.zinc[500],
+      '--tw-prose-kbd': colors.zinc[900],
+      '--tw-prose-kbd-shadows': hexToRgb(colors.zinc[900]),
+      '--tw-prose-code': colors.zinc[900],
+      '--tw-prose-pre-code': colors.zinc[200],
+      '--tw-prose-pre-bg': colors.zinc[800],
+      '--tw-prose-th-borders': colors.zinc[300],
+      '--tw-prose-td-borders': colors.zinc[200],
+      '--tw-prose-invert-body': colors.zinc[300],
+      '--tw-prose-invert-headings': colors.white,
+      '--tw-prose-invert-lead': colors.zinc[400],
+      '--tw-prose-invert-links': colors.white,
+      '--tw-prose-invert-bold': colors.white,
+      '--tw-prose-invert-counters': colors.zinc[400],
+      '--tw-prose-invert-bullets': colors.zinc[600],
+      '--tw-prose-invert-hr': colors.zinc[700],
+      '--tw-prose-invert-quotes': colors.zinc[100],
+      '--tw-prose-invert-quote-borders': colors.zinc[700],
+      '--tw-prose-invert-captions': colors.zinc[400],
+      '--tw-prose-invert-kbd': colors.white,
+      '--tw-prose-invert-kbd-shadows': hexToRgb(colors.white),
+      '--tw-prose-invert-code': colors.white,
+      '--tw-prose-invert-pre-code': colors.zinc[300],
+      '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
+      '--tw-prose-invert-th-borders': colors.zinc[600],
+      '--tw-prose-invert-td-borders': colors.zinc[700],
+    },
+  },
+
+  neutral: {
+    css: {
+      '--tw-prose-body': colors.neutral[700],
+      '--tw-prose-headings': colors.neutral[900],
+      '--tw-prose-lead': colors.neutral[600],
+      '--tw-prose-links': colors.neutral[900],
+      '--tw-prose-bold': colors.neutral[900],
+      '--tw-prose-counters': colors.neutral[500],
+      '--tw-prose-bullets': colors.neutral[300],
+      '--tw-prose-hr': colors.neutral[200],
+      '--tw-prose-quotes': colors.neutral[900],
+      '--tw-prose-quote-borders': colors.neutral[200],
+      '--tw-prose-captions': colors.neutral[500],
+      '--tw-prose-kbd': colors.neutral[900],
+      '--tw-prose-kbd-shadows': hexToRgb(colors.neutral[900]),
+      '--tw-prose-code': colors.neutral[900],
+      '--tw-prose-pre-code': colors.neutral[200],
+      '--tw-prose-pre-bg': colors.neutral[800],
+      '--tw-prose-th-borders': colors.neutral[300],
+      '--tw-prose-td-borders': colors.neutral[200],
+      '--tw-prose-invert-body': colors.neutral[300],
+      '--tw-prose-invert-headings': colors.white,
+      '--tw-prose-invert-lead': colors.neutral[400],
+      '--tw-prose-invert-links': colors.white,
+      '--tw-prose-invert-bold': colors.white,
+      '--tw-prose-invert-counters': colors.neutral[400],
+      '--tw-prose-invert-bullets': colors.neutral[600],
+      '--tw-prose-invert-hr': colors.neutral[700],
+      '--tw-prose-invert-quotes': colors.neutral[100],
+      '--tw-prose-invert-quote-borders': colors.neutral[700],
+      '--tw-prose-invert-captions': colors.neutral[400],
+      '--tw-prose-invert-kbd': colors.white,
+      '--tw-prose-invert-kbd-shadows': hexToRgb(colors.white),
+      '--tw-prose-invert-code': colors.white,
+      '--tw-prose-invert-pre-code': colors.neutral[300],
+      '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
+      '--tw-prose-invert-th-borders': colors.neutral[600],
+      '--tw-prose-invert-td-borders': colors.neutral[700],
+    },
+  },
+
+  stone: {
+    css: {
+      '--tw-prose-body': colors.stone[700],
+      '--tw-prose-headings': colors.stone[900],
+      '--tw-prose-lead': colors.stone[600],
+      '--tw-prose-links': colors.stone[900],
+      '--tw-prose-bold': colors.stone[900],
+      '--tw-prose-counters': colors.stone[500],
+      '--tw-prose-bullets': colors.stone[300],
+      '--tw-prose-hr': colors.stone[200],
+      '--tw-prose-quotes': colors.stone[900],
+      '--tw-prose-quote-borders': colors.stone[200],
+      '--tw-prose-captions': colors.stone[500],
+      '--tw-prose-kbd': colors.stone[900],
+      '--tw-prose-kbd-shadows': hexToRgb(colors.stone[900]),
+      '--tw-prose-code': colors.stone[900],
+      '--tw-prose-pre-code': colors.stone[200],
+      '--tw-prose-pre-bg': colors.stone[800],
+      '--tw-prose-th-borders': colors.stone[300],
+      '--tw-prose-td-borders': colors.stone[200],
+      '--tw-prose-invert-body': colors.stone[300],
+      '--tw-prose-invert-headings': colors.white,
+      '--tw-prose-invert-lead': colors.stone[400],
+      '--tw-prose-invert-links': colors.white,
+      '--tw-prose-invert-bold': colors.white,
+      '--tw-prose-invert-counters': colors.stone[400],
+      '--tw-prose-invert-bullets': colors.stone[600],
+      '--tw-prose-invert-hr': colors.stone[700],
+      '--tw-prose-invert-quotes': colors.stone[100],
+      '--tw-prose-invert-quote-borders': colors.stone[700],
+      '--tw-prose-invert-captions': colors.stone[400],
+      '--tw-prose-invert-kbd': colors.white,
+      '--tw-prose-invert-kbd-shadows': hexToRgb(colors.white),
+      '--tw-prose-invert-code': colors.white,
+      '--tw-prose-invert-pre-code': colors.stone[300],
+      '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 50%)',
+      '--tw-prose-invert-th-borders': colors.stone[600],
+      '--tw-prose-invert-td-borders': colors.stone[700],
+    },
+  },
+
+  // Link-only themes (for backward compatibility)
+
+  red: {
+    css: {
+      '--tw-prose-links': colors.red[600],
+      '--tw-prose-invert-links': colors.red[500],
+    },
+  },
+
+  orange: {
+    css: {
+      '--tw-prose-links': colors.orange[600],
+      '--tw-prose-invert-links': colors.orange[500],
+    },
+  },
+
+  amber: {
+    css: {
+      '--tw-prose-links': colors.amber[600],
+      '--tw-prose-invert-links': colors.amber[500],
+    },
+  },
+
+  yellow: {
+    css: {
+      '--tw-prose-links': colors.yellow[600],
+      '--tw-prose-invert-links': colors.yellow[500],
+    },
+  },
+
+  lime: {
+    css: {
+      '--tw-prose-links': colors.lime[600],
+      '--tw-prose-invert-links': colors.lime[500],
+    },
+  },
+
+  green: {
+    css: {
+      '--tw-prose-links': colors.green[600],
+      '--tw-prose-invert-links': colors.green[500],
+    },
+  },
+
+  emerald: {
+    css: {
+      '--tw-prose-links': colors.emerald[600],
+      '--tw-prose-invert-links': colors.emerald[500],
+    },
+  },
+
+  teal: {
+    css: {
+      '--tw-prose-links': colors.teal[600],
+      '--tw-prose-invert-links': colors.teal[500],
+    },
+  },
+
+  cyan: {
+    css: {
+      '--tw-prose-links': colors.cyan[600],
+      '--tw-prose-invert-links': colors.cyan[500],
+    },
+  },
+
+  sky: {
+    css: {
+      '--tw-prose-links': colors.sky[600],
+      '--tw-prose-invert-links': colors.sky[500],
+    },
+  },
+
+  blue: {
+    css: {
+      '--tw-prose-links': colors.blue[600],
+      '--tw-prose-invert-links': colors.blue[500],
+    },
+  },
+
+  indigo: {
+    css: {
+      '--tw-prose-links': colors.indigo[600],
+      '--tw-prose-invert-links': colors.indigo[500],
+    },
+  },
+
+  violet: {
+    css: {
+      '--tw-prose-links': colors.violet[600],
+      '--tw-prose-invert-links': colors.violet[500],
+    },
+  },
+
+  purple: {
+    css: {
+      '--tw-prose-links': colors.purple[600],
+      '--tw-prose-invert-links': colors.purple[500],
+    },
+  },
+
+  fuchsia: {
+    css: {
+      '--tw-prose-links': colors.fuchsia[600],
+      '--tw-prose-invert-links': colors.fuchsia[500],
+    },
+  },
+
+  pink: {
+    css: {
+      '--tw-prose-links': colors.pink[600],
+      '--tw-prose-invert-links': colors.pink[500],
+    },
+  },
+
+  rose: {
+    css: {
+      '--tw-prose-links': colors.rose[600],
+      '--tw-prose-invert-links': colors.rose[500],
+    },
+  },
+
+  // Invert (for dark mode)
+  invert: {
+    css: {
+      '--tw-prose-body': 'var(--tw-prose-invert-body)',
+      '--tw-prose-headings': 'var(--tw-prose-invert-headings)',
+      '--tw-prose-lead': 'var(--tw-prose-invert-lead)',
+      '--tw-prose-links': 'var(--tw-prose-invert-links)',
+      '--tw-prose-bold': 'var(--tw-prose-invert-bold)',
+      '--tw-prose-counters': 'var(--tw-prose-invert-counters)',
+      '--tw-prose-bullets': 'var(--tw-prose-invert-bullets)',
+      '--tw-prose-hr': 'var(--tw-prose-invert-hr)',
+      '--tw-prose-quotes': 'var(--tw-prose-invert-quotes)',
+      '--tw-prose-quote-borders': 'var(--tw-prose-invert-quote-borders)',
+      '--tw-prose-captions': 'var(--tw-prose-invert-captions)',
+      '--tw-prose-kbd': 'var(--tw-prose-invert-kbd)',
+      '--tw-prose-kbd-shadows': 'var(--tw-prose-invert-kbd-shadows)',
+      '--tw-prose-code': 'var(--tw-prose-invert-code)',
+      '--tw-prose-pre-code': 'var(--tw-prose-invert-pre-code)',
+      '--tw-prose-pre-bg': 'var(--tw-prose-invert-pre-bg)',
+      '--tw-prose-th-borders': 'var(--tw-prose-invert-th-borders)',
+      '--tw-prose-td-borders': 'var(--tw-prose-invert-td-borders)',
+    },
+  },
 }
 
-/**
- * 整体采用飞书云文档的布局规范，可以配合不同的 bear 配色方案。
- * Bear 的配色方案位于 src/themes/bear-palettes 目录。
- */
-#write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
-  color: #262626;
-}
-#write del, #write s {
-  color: #525252;
-}
-#write u {
-  text-decoration: none;
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, #e06e73 50%);
-  background-repeat: repeat-x;
-  background-size: 2px 2px;
-  background-position: 0 1em;
-}
-#write * {
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-#write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
-  line-height: 1.4;
-  font-weight: 500;
-  margin-top: 1em;
-  margin-bottom: 0.37em;
-}
-#write blockquote {
-  display: block;
-  margin-left: 0;
-  padding-left: 14px;
-  border-left: 2px solid #e06e73;
-}
-#write code {
-  border-radius: 4px;
-  margin-left: 2px;
-  margin-right: 2px;
-  border: 1px solid #bfbfbf;
-  background-color: white;
-  word-spacing: normal;
-  line-height: 1.6;
-  padding: 0 2px;
-  color: #424242;
-}
-#write a {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  hyphens: auto;
-  word-break: break-word;
-  text-decoration: none;
-}
-#write a:hover {
-  text-decoration: underline;
-}
-#write hr {
-  margin: 13px 0 12px;
-  border: 0px;
-  height: 1px;
-  background-origin: content-box;
-  background-image: linear-gradient(90deg, #bfbfbf, #bfbfbf);
-  background-repeat: no-repeat;
-}
-#write ul {
-  margin-left: 0;
-  padding-left: 22px;
-  list-style: none;
-}
-#write ul > li:not([class*=task-list-item]) {
-  word-wrap: break-all;
-  padding-left: 0px;
-}
-#write ul > li:not([class*=task-list-item]):before {
-  position: absolute;
-  top: 2px;
-  content: "•";
-  color: #e06e73;
-  display: inline-block;
-  margin-left: -20px;
-  margin-right: 20px;
-  width: 0px;
-  font-size: 0.8em;
-  transform: scale(1.25);
-  font-family: PingFangSC-Regular, PingFang SC;
-}
-#write ul > li:not([class*=task-list-item]) li:not([class*=task-list-item])::before {
-  content: "◦";
-  transform: scale(1);
-  font-weight: 700;
-}
-#write ul > li:not([class*=task-list-item]) li:not([class*=task-list-item]) li:not([class*=task-list-item])::before {
-  content: "▪";
-  transform: scale(1.25);
-  font-weight: normal;
-}
-#write ol {
-  counter-reset: ol_counter;
-  margin-left: 0;
-  padding-left: 22px;
-  list-style: none;
-}
-#write ol > li:not([class*=task-list-item]) {
-  word-wrap: break-all;
-  padding-left: 0px;
-  position: relative;
-}
-#write ol > li:not([class*=task-list-item]):before {
-  content: counter(ol_counter) ".";
-  counter-increment: ol_counter;
-  color: #e06e73;
-  position: absolute;
-  margin-left: -22px;
-  margin-right: 4px;
-  padding-left: 2px;
-  padding-right: 2px;
-  text-align: left;
-  white-space: nowrap;
-  overflow: visible;
-  min-width: 18px;
-  border-radius: 2px;
-  transform: translateX(-2px);
-  font-family: Helvetica Neue, Consolas;
-}
-#write li + li, #write ul ul, #write ol ul, #write ul ol, #write ol ol, #write li ul, #write li ol {
-  margin-top: 4px;
-}
-#write .task-list-item {
-  padding-left: 0.3rem;
-}
-#write .task-list-item > p {
-  transition: color 0.3s, opacity 0.3s;
-}
-#write .task-list-item.task-list-done > p {
-  color: #525252;
-  text-decoration: line-through;
-}
-#write .task-list-item.task-list-done > p > .md-emoji {
-  opacity: 0.5;
-}
-#write .task-list-item.task-list-done > p > .md-link > a {
-  opacity: 0.6;
-}
-#write .task-list-item > input {
-  -webkit-appearance: initial;
-  display: block;
-  position: absolute;
-  border: 1px solid #bfbfbf;
-  border-radius: 0.25rem;
-  margin-left: -1.5rem;
-  height: 1.2rem;
-  width: 1.2rem;
-  transition: border-color 0.3s;
-  background-color: #fcfcfc;
-}
-#write .task-list-item > input:focus {
-  outline: none;
-  box-shadow: none;
-}
-#write .task-list-item > input:hover {
-  border-color: #e06e73;
-}
-#write .task-list-item > input[checked]::before {
-  content: "";
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  height: 60%;
-  width: 2px;
-  transform: rotate(40deg);
-  background: #e06e73;
-}
-#write .task-list-item > input[checked]::after {
-  content: "";
-  position: absolute;
-  top: 46%;
-  left: 25%;
-  height: 30%;
-  width: 2px;
-  transform: rotate(-40deg);
-  background: #e06e73;
-}
-#write .cm-s-inner .cm-comment {
-  color: #575757;
-}
-#write .cm-s-inner .cm-property,
-#write .cm-s-inner .cm-tag {
-  color: #905;
-}
-#write .cm-s-inner .cm-bracket,
-#write .cm-s-inner .cm-punctuation {
-  color: #999;
-}
-#write .cm-s-inner .cm-number {
-  color: #0b5d83;
-}
-#write .cm-s-inner .cm-qualifier,
-#write .cm-s-inner .cm-string, #write .cm-s-inner .cm-string-2,
-#write .cm-s-inner .cm-builtin {
-  color: #b43d15;
-}
-#write .cm-s-inner .cm-attribute {
-  color: #b43d15;
-}
-#write .cm-s-inner .cm-operator {
-  color: #920448;
-}
-#write .cm-s-inner .cm-atom,
-#write .cm-s-inner .cm-keyword {
-  color: #2478c5;
-}
-#write .cm-s-inner .cm-def,
-#write .cm-s-inner .cm-variable,
-#write .cm-s-inner .cm-variable-2, #write .cm-s-inner .cm-variable-3 {
-  color: #0E73A2;
-}
-#write .cm-s-inner .cm-type {
-  color: #04202d;
+module.exports = {
+  DEFAULT: {
+    css: [
+      {
+        color: 'var(--tw-prose-body)',
+        maxWidth: '65ch',
+        p: {}, // Required to maintain correct order when merging
+        '[class~="lead"]': {
+          color: 'var(--tw-prose-lead)',
+        },
+        a: {
+          color: 'var(--tw-prose-links)',
+          textDecoration: 'underline',
+          fontWeight: '500',
+        },
+        strong: {
+          color: 'var(--tw-prose-bold)',
+          fontWeight: '600',
+        },
+        'a strong': {
+          color: 'inherit',
+        },
+        'blockquote strong': {
+          color: 'inherit',
+        },
+        'thead th strong': {
+          color: 'inherit',
+        },
+        ol: {
+          listStyleType: 'decimal',
+        },
+        'ol[type="A"]': {
+          listStyleType: 'upper-alpha',
+        },
+        'ol[type="a"]': {
+          listStyleType: 'lower-alpha',
+        },
+        'ol[type="A" s]': {
+          listStyleType: 'upper-alpha',
+        },
+        'ol[type="a" s]': {
+          listStyleType: 'lower-alpha',
+        },
+        'ol[type="I"]': {
+          listStyleType: 'upper-roman',
+        },
+        'ol[type="i"]': {
+          listStyleType: 'lower-roman',
+        },
+        'ol[type="I" s]': {
+          listStyleType: 'upper-roman',
+        },
+        'ol[type="i" s]': {
+          listStyleType: 'lower-roman',
+        },
+        'ol[type="1"]': {
+          listStyleType: 'decimal',
+        },
+        ul: {
+          listStyleType: 'disc',
+        },
+        'ol > li::marker': {
+          fontWeight: '400',
+          color: 'var(--tw-prose-counters)',
+        },
+        'ul > li::marker': {
+          color: 'var(--tw-prose-bullets)',
+        },
+        dt: {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '600',
+        },
+        hr: {
+          borderColor: 'var(--tw-prose-hr)',
+          borderTopWidth: 1,
+        },
+        blockquote: {
+          fontWeight: '500',
+          fontStyle: 'italic',
+          color: 'var(--tw-prose-quotes)',
+          borderLeftWidth: '0.25rem',
+          borderLeftColor: 'var(--tw-prose-quote-borders)',
+          quotes: '"\\201C""\\201D""\\2018""\\2019"',
+        },
+        'blockquote p:first-of-type::before': {
+          content: 'open-quote',
+        },
+        'blockquote p:last-of-type::after': {
+          content: 'close-quote',
+        },
+        h1: {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '800',
+        },
+        'h1 strong': {
+          fontWeight: '900',
+          color: 'inherit',
+        },
+        h2: {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '700',
+        },
+        'h2 strong': {
+          fontWeight: '800',
+          color: 'inherit',
+        },
+        h3: {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '600',
+        },
+        'h3 strong': {
+          fontWeight: '700',
+          color: 'inherit',
+        },
+        h4: {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '600',
+        },
+        'h4 strong': {
+          fontWeight: '700',
+          color: 'inherit',
+        },
+        img: {}, // Required to maintain correct order when merging
+        picture: {
+          display: 'block',
+        },
+        kbd: {
+          fontWeight: '500',
+          fontFamily: 'inherit',
+          color: 'var(--tw-prose-kbd)',
+          boxShadow:
+            '0 0 0 1px rgb(var(--tw-prose-kbd-shadows) / 10%), 0 3px 0 rgb(var(--tw-prose-kbd-shadows) / 10%)',
+        },
+        code: {
+          color: 'var(--tw-prose-code)',
+          fontWeight: '600',
+        },
+        'code::before': {
+          content: '"`"',
+        },
+        'code::after': {
+          content: '"`"',
+        },
+        'a code': {
+          color: 'inherit',
+        },
+        'h1 code': {
+          color: 'inherit',
+        },
+        'h2 code': {
+          color: 'inherit',
+        },
+        'h3 code': {
+          color: 'inherit',
+        },
+        'h4 code': {
+          color: 'inherit',
+        },
+        'blockquote code': {
+          color: 'inherit',
+        },
+        'thead th code': {
+          color: 'inherit',
+        },
+        pre: {
+          color: 'var(--tw-prose-pre-code)',
+          backgroundColor: 'var(--tw-prose-pre-bg)',
+          overflowX: 'auto',
+          fontWeight: '400',
+        },
+        'pre code': {
+          backgroundColor: 'transparent',
+          borderWidth: '0',
+          borderRadius: '0',
+          padding: '0',
+          fontWeight: 'inherit',
+          color: 'inherit',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+          lineHeight: 'inherit',
+        },
+        'pre code::before': {
+          content: 'none',
+        },
+        'pre code::after': {
+          content: 'none',
+        },
+        table: {
+          width: '100%',
+          tableLayout: 'auto',
+          textAlign: 'left',
+          marginTop: em(32, 16),
+          marginBottom: em(32, 16),
+        },
+        thead: {
+          borderBottomWidth: '1px',
+          borderBottomColor: 'var(--tw-prose-th-borders)',
+        },
+        'thead th': {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: '600',
+          verticalAlign: 'bottom',
+        },
+        'tbody tr': {
+          borderBottomWidth: '1px',
+          borderBottomColor: 'var(--tw-prose-td-borders)',
+        },
+        'tbody tr:last-child': {
+          borderBottomWidth: '0',
+        },
+        'tbody td': {
+          verticalAlign: 'baseline',
+        },
+        tfoot: {
+          borderTopWidth: '1px',
+          borderTopColor: 'var(--tw-prose-th-borders)',
+        },
+        'tfoot td': {
+          verticalAlign: 'top',
+        },
+        'figure > *': {}, // Required to maintain correct order when merging
+        figcaption: {
+          color: 'var(--tw-prose-captions)',
+        },
+      },
+      defaultModifiers.gray.css,
+      ...defaultModifiers.base.css,
+    ],
+  },
+  ...defaultModifiers,
 }
