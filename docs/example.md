@@ -1,15 +1,6 @@
-# VitePress 💙 StackBlitz
+# 欢迎👏
 
-Hi there :wave: This is a demo running VitePress within your **browser tab**!
-
-## Powered by Vite
-
-VitePress uses Vite under the hood. This means:
-
-- Instant server start
-- Lightning fast HMR
-- Optimized builds
-
-## Markdown-Centered
-
-So you can focus more on writing. Powered by MarkdownIt. Comes with many [built-in extensions](https://vitepress.dev/guide/markdown), and you can use Vue features in Markdown too!
+你可以看看：
+1. 123123 [读书笔记](https://vitepress.dev/guide/markdown)
+2. 区块链百科
+3. 浴室沉思
