@@ -1,0 +1,58 @@
+.main { padding-top: 1rem; padding-bottom: 3rem; }
+
+.kbTitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  margin: 1.5rem 0 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.list { list-style: none; margin: 0; padding: 0; }
+
+.item {
+  padding: 3.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.item:last-child { border-bottom: 0; }
+
+.title {
+  font-size: 1.55rem;
+  font-weight: 400;
+  line-height: 1.35;
+  margin: 0 0 1rem;
+  letter-spacing: 0.01em;
+}
+.title a { color: var(--ink-1); }
+.title a:hover { color: var(--ink-3); text-decoration: none; }
+
+.excerpt {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--ink-2);
+  margin: 0 0 1.25rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+}
+.sep { color: var(--ink-4); }
+.kb { color: var(--ink-2); }
+.kb:hover { text-decoration: none; color: var(--ink-1); }
+
+.empty { color: var(--ink-3); padding: 3rem 0; }
+
+@media (max-width: 600px) {
+  .item { padding: 2.25rem 0; }
+  .title { font-size: 1.3rem; }
+  .excerpt { font-size: 1rem; }
+}

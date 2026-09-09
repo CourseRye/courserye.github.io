@@ -1,0 +1,3 @@
+.stars { display: inline-flex; gap: 2px; vertical-align: middle; }
+.on { fill: #f7b500; }
+.off { fill: #e2e2e2; }

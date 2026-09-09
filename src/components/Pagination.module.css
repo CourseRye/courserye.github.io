@@ -1,0 +1,12 @@
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem 0 1rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+.pagination a { color: var(--ink-1); }
+.pagination a:hover { text-decoration: none; color: var(--ink-3); }
+.info { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.disabled { color: var(--ink-4); }
