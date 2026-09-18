@@ -19,12 +19,20 @@
 .title a { color: var(--text); text-decoration: none; }
 .title a:hover { color: var(--accent); text-decoration: none; }
 
-/* 简介：正文样式 */
+/* 简介：正文样式，固定两行高，多出的裁掉；段落之间的制表符宽 4 个空格 */
 .excerpt {
   font-size: var(--text-size);
   line-height: var(--text-lh);
   color: var(--text);
   margin: 0 0 var(--gap);
+  min-height: calc(var(--gap) * 2);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  white-space: pre-wrap;
+  tab-size: 4;
 }
 
 /* 日期与分类：正文字号，次要文字色，中间隔一个 Tab（4 个空格宽） */

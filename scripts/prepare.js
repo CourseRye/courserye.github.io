@@ -141,6 +141,10 @@ function hardBreaks(text) {
       }
       if (inFence) return line;
       const next = lines[i + 1];
+      // 引用内部相邻的两行（都以 > 开头）也补硬换行，否则会被合并成一段
+      if (/^\s*>/.test(line) && next !== undefined && /^\s*>\s*\S/.test(next) && !/( {2,}|\\)$/.test(line)) {
+        return line + '  ';
+      }
       if (
         line.trim() &&
         next !== undefined &&
@@ -175,13 +179,32 @@ function plainText(mdText) {
     .replace(/^\s*\d+[.、]\s+/gm, '');
 }
 
-function excerpt(body, limit) {
-  const paras = plainText(body)
+function paragraphs(body) {
+  return plainText(body)
     .split(/\n\s*\n/)
     .map((p) => p.replace(/\s+/g, ' ').trim())
     .filter((p) => p.length > 0);
-  const first = paras[0] || '';
+}
+
+// 搜索引擎和 RSS 用的摘要：第一段，超过 limit 截断
+function excerpt(body, limit) {
+  const first = paragraphs(body)[0] || '';
   return first.length > limit ? first.slice(0, limit) + '…' : first;
+}
+
+// 列表页用的简介：固定占两行，第一段不够两行（按每行约 45 字算）就接上后面的段落，段落之间用制表符隔开
+// 页面上超出两行的部分由 CSS 裁掉
+const LIST_EXCERPT_CHARS = 90;
+function listExcerpt(body) {
+  const paras = paragraphs(body);
+  const parts = [];
+  let len = 0;
+  for (const p of paras) {
+    parts.push(p);
+    len += p.length;
+    if (len >= LIST_EXCERPT_CHARS) break;
+  }
+  return parts.join('\t');
 }
 
 function yaml(v) {
@@ -307,8 +330,8 @@ function processDoc(file, outDir, kb, year) {
     date,
     year: year || date.slice(0, 4),
     url,
-    excerpt: desc,
-    hover: excerpt(body, 160),
+    excerpt: listExcerpt(body),
+    desc,
     cover: firstCover(body),
   });
 }
@@ -339,7 +362,7 @@ if (fs.existsSync(aboutSrc)) {
 const rssItems = [];
 for (const p of posts) {
   if (config.rssIncludes.includes(p.kb)) {
-    rssItems.push({ title: p.title, url: config.url + p.url, date: p.date, desc: p.excerpt });
+    rssItems.push({ title: p.title, url: config.url + p.url, date: p.date, desc: p.desc });
   }
 }
 if (config.rssIncludes.includes('thoughts')) {

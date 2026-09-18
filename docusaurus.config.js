@@ -120,7 +120,9 @@ const config = {
         style: 'light',
         copyright:
           `<span class="footer-brand">© ${site.siteName}</span>` +
+          '<span class="footer-tab">\t</span>' +
           `<a class="footer-icon" href="/about" aria-label="关于" title="关于">${aboutIcon}</a>` +
+          '<span class="footer-tab">\t</span>' +
           `<a class="footer-icon" href="/rss.xml" target="_blank" rel="noopener" aria-label="RSS" title="RSS">${rssIcon}</a>`,
       },
       prism: {

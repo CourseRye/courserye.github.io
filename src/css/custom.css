@@ -129,9 +129,9 @@ html, body { background: var(--paper); }
 }
 .navbar-sidebar__brand .navbar__title { font-size: calc(var(--text-size) * 1.27); }
 
-/* 页脚：版权、关于、RSS，间距与导航栏一致 */
+/* 页脚：版权、关于、RSS，之间各一个制表符（4 个空格宽），没有分割线 */
 .footer {
-  border-top: 1px solid var(--line);
+  border-top: 0;
   color: var(--text-2);
   font-size: var(--text-size);
 }
@@ -149,12 +149,12 @@ html, body { background: var(--paper); }
 .footer-brand {
   font-family: var(--font-sans);
   letter-spacing: 0;
-  margin-right: 2rem;
 }
+.footer-tab { white-space: pre; tab-size: 4; }
 .footer-icon {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0;
   color: var(--text-2);
 }
 .footer-icon:hover { color: var(--accent); text-decoration: none; }
@@ -241,7 +241,17 @@ html, body { background: var(--paper); }
 /* 行内元素 */
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a { color: var(--accent); text-decoration: none; }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a:hover { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent); }
-:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(strong, b) { font-weight: 700; }
+/* 链接文字后跟一个强调色实心圆、白色斜向上箭头的小图标；图片链接和标题锚点不加 */
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a:not(.hash-link):not(:has(img))::after {
+  content: '';
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-left: 0.25em;
+  vertical-align: -0.1em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23dd4c4f'/%3E%3Cpath d='M8.5 15.5l7-7M10 8.5h5.5V14' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(strong, b) { font-weight: 700; color: var(--accent); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(em, i) { font-style: italic; }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) u { text-decoration: underline; text-decoration-color: var(--accent); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(s, del, strike) { text-decoration: line-through; }
