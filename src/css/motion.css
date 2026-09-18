@@ -42,7 +42,6 @@ button,
     visibility var(--m-base),
     transform var(--m-base) var(--m-ease),
     color var(--m-fast) ease,
-    border-color var(--m-fast) ease,
     box-shadow var(--m-base) ease;
 }
 .back-to-top:active { transition-duration: var(--m-fast); }
