@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const crypto = require('crypto');
 const { pinyin } = require('pinyin-pro');
 const MarkdownIt = require('markdown-it');
 const config = require('../site.config');
@@ -336,6 +337,60 @@ function processDoc(file, outDir, kb, year) {
   });
 }
 
+// ---------- 封面图本地化 ----------
+// 读书网格的封面原图通常是几 MB 的大截图，页面上只显示 160 px 宽。
+// 这里在构建时把封面下载下来，裁出网格里实际可见的区域（按 coverRatio 和 coverZoom），缩到 480 px 宽，
+// 转成 WebP 存到 static/covers，页面改用本地小图。文件按链接哈希命名，已存在的不再重复处理，处理结果随仓库提交。
+// 想重新处理某张图，删掉 static/covers 里对应的文件再构建即可。下载或处理失败时保持原链接。
+const COVERS_DIR = path.join(ROOT, 'static', 'covers');
+const COVER_WIDTH = 480;
+
+async function localizeCovers() {
+  const gridKbs = new Set(config.knowledgeBases.filter((kb) => kb.type === 'grid').map((kb) => kb.id));
+  const targets = posts.filter((p) => gridKbs.has(p.kb) && p.cover && /^https?:\/\//.test(p.cover));
+  if (targets.length === 0) return;
+  let sharp;
+  try {
+    sharp = require('sharp');
+  } catch (e) {
+    console.warn('[prepare] 没有安装 sharp，封面图保持原链接');
+    return;
+  }
+  mkdirp(COVERS_DIR);
+  const [rw, rh] = String(config.coverRatio || '3 / 4').split('/').map((n) => parseFloat(n));
+  const ratio = rw / rh;
+  const zoom = config.coverZoom || 1;
+
+  for (const p of targets) {
+    const hash = crypto.createHash('md5').update(p.cover).digest('hex').slice(0, 12);
+    const file = path.join(COVERS_DIR, `${hash}.webp`);
+    if (!fs.existsSync(file)) {
+      try {
+        const res = await fetch(p.cover);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = Buffer.from(await res.arrayBuffer());
+        const { width: W, height: H } = await sharp(buf).metadata();
+        // 网格里可见的区域：源图内最大的 coverRatio 框，再按 coverZoom 缩小，居中
+        const cw = Math.round(Math.min(W, H * ratio) / zoom);
+        const ch = Math.round(cw / ratio);
+        const left = Math.round((W - cw) / 2);
+        const top = Math.round((H - ch) / 2);
+        await sharp(buf)
+          .extract({ left, top, width: cw, height: ch })
+          .resize({ width: COVER_WIDTH })
+          .webp({ quality: 80 })
+          .toFile(file);
+        console.log(`[prepare] 封面已处理：${p.title} → covers/${hash}.webp`);
+      } catch (e) {
+        console.warn(`[prepare] 封面处理失败，保持原链接：${p.title}（${e.message}）`);
+        continue;
+      }
+    }
+    p.cover = `/covers/${hash}.webp`;
+  }
+}
+
+async function finish() {
 // ---------- 排序与输出 ----------
 
 function byDateDesc(a, b) {
@@ -400,3 +455,9 @@ mkdirp(path.join(ROOT, 'static'));
 fs.writeFileSync(path.join(ROOT, 'static', 'rss.xml'), rss);
 
 console.log(`[prepare] 文章 ${posts.length} 篇，想法 ${thoughts.length} 条，RSS ${rssItems.length} 条`);
+}
+
+localizeCovers().then(finish).catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

@@ -67,6 +67,14 @@ content/
 
 注意：本地预览（npm start）运行期间改了 knowledgeBases（新增、删除、改 id），必须停掉 npm start 再重新启动，否则新知识库的文章页会报错「Cannot read properties of undefined」。另外不要在 npm start 运行期间跑 npm run build，两者共用缓存目录，会互相干扰。
 
+### 2.5 读书笔记封面
+
+封面原图往往是几 MB 的大截图，构建时会自动下载、按 site.config.js 里的 coverRatio 和 coverZoom 裁出书封区域、缩到 480 px 宽、转成 WebP 存进 static/covers，页面用这些本地小图（每张十几 KB）。
+
+1. 处理结果随仓库一起提交，已经处理过的封面不会重复下载
+2. 想重新处理某张封面（比如换了图但链接没变），删掉 static/covers 里对应的文件再构建
+3. 下载失败时页面退回原链接，构建不会中断，控制台会有提示
+
 ## 3.0 日常发布
 
 1. 在 Bear 里导出 Markdown，导出时不勾选 base64 Images 和 Export attachments

@@ -11,6 +11,8 @@ function BookCard({ post, index, colors, ratio, zoom }) {
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef(null);
   const showImg = post.cover && !broken;
+  // 本地封面在构建时已经裁好，不再放大；只有仍是远程链接的封面才按 coverZoom 放大
+  const coverZoom = showImg && /^https?:\/\//.test(post.cover) ? zoom : 1;
 
   // 图片在脚本接管前就已经加载完成时，onLoad 不会再触发，这里补一次
   useEffect(() => {
@@ -22,7 +24,7 @@ function BookCard({ post, index, colors, ratio, zoom }) {
       <Link to={post.url} className={styles.cardLink}>
         <div
           className={`${styles.cover} book-cover`}
-          style={{ aspectRatio: ratio, backgroundColor: showImg ? '#f2f2f2' : color, '--cover-zoom': zoom }}
+          style={{ aspectRatio: ratio, backgroundColor: showImg ? '#f2f2f2' : color, '--cover-zoom': coverZoom }}
         >
           {showImg && (
             <img
@@ -30,6 +32,7 @@ function BookCard({ post, index, colors, ratio, zoom }) {
               src={post.cover}
               alt=""
               loading="lazy"
+              decoding="async"
               className={loaded ? 'is-loaded' : undefined}
               onLoad={() => setLoaded(true)}
               onError={() => setBroken(true)}
