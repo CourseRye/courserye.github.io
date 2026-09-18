@@ -14,7 +14,7 @@ module.exports = {
   url: 'https://courserye.github.io',
 
   // Google Analytics 的衡量 ID，形如 G-XXXXXXXXXX，留空表示不启用
-  googleAnalyticsId: '',
+  googleAnalyticsId: 'G-P29E2CBXS2',
 
   // 每页显示多少条，首页、列表页、浴室沉思页共用
   pageSize: 10,
