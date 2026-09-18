@@ -2,11 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2.5rem 0 1rem;
-  font-size: 0.9rem;
-  letter-spacing: 0.04em;
+  padding: calc(var(--gap) * 2) 0 var(--gap);
+  font-size: var(--text-size);
+  line-height: var(--text-lh);
 }
-.pagination a { color: var(--ink-1); }
-.pagination a:hover { text-decoration: none; color: var(--ink-3); }
-.info { color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.disabled { color: var(--ink-4); }
+.pagination a { color: var(--text); text-decoration: none; }
+.pagination a:hover { color: var(--accent); text-decoration: none; }
+.info { color: var(--text-2); font-variant-numeric: tabular-nums; }
+.disabled { color: var(--text-3); }

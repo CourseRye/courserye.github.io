@@ -13,7 +13,6 @@
     "@docusaurus/core": "3.10.2",
     "@docusaurus/faster": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
-    "@easyops-cn/docusaurus-search-local": "^0.55.3",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
     "markdown-it": "^15.0.1",

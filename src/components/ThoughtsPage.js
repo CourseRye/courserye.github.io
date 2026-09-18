@@ -24,7 +24,7 @@ export default function ThoughtsPage({ data }) {
 
   return (
     <Layout title={title} description={siteConfig.tagline}>
-      <main className={`page-narrow ${styles.main}`}>
+      <main className={`page-col ${styles.main}`}>
         <h1 className={styles.kbTitle}>{title}</h1>
         {items.length === 0 && <p className={styles.empty}>这里还没有想法。</p>}
         <ul className={styles.list}>
@@ -33,7 +33,7 @@ export default function ThoughtsPage({ data }) {
               <time className={styles.date} dateTime={t.date}>
                 {t.date}
               </time>
-              <div className={`markdown ${styles.body}`} dangerouslySetInnerHTML={{ __html: t.html }} />
+              <div className={`markdown prose ${styles.body}`} dangerouslySetInnerHTML={{ __html: t.html }} />
             </li>
           ))}
         </ul>

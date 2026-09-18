@@ -16,7 +16,7 @@ module.exports = {
   // Google Analytics 的衡量 ID，形如 G-XXXXXXXXXX，留空表示不启用
   googleAnalyticsId: '',
 
-  // 每页显示多少条，首页、列表页、想法页共用
+  // 每页显示多少条，首页、列表页、浴室沉思页共用
   pageSize: 10,
 
   // 读书笔记没有封面图时，轮流使用这些纯色作为占位
@@ -25,19 +25,24 @@ module.exports = {
   // 读书笔记封面比例，宽比高
   coverRatio: '3 / 4',
 
+  // 读书笔记封面裁剪：封面图是 1920×1080 的图、书封居中占 540×720 时填 1.5，网格里就只露出书封
+  // 如果以后封面图本身就是一张书封，填 1
+  coverZoom: 1.5,
+
   // 左侧目录树里年份文件夹的排列顺序：desc 最新年份在上，asc 最早年份在上
   sidebarYearOrder: 'desc',
 
-  // 想法在 RSS 里的标题后缀，最终标题形如「2026-05-05 想法」
+  // 浴室沉思在 RSS 里的标题后缀，最终标题形如「2026-05-05 想法」
   thoughtTitleSuffix: '想法',
 
   // 四个知识库，folder 是 content 目录下的文件夹名，改文件夹名时同步改这里
   // type 有三种：list 表示 Chalk 风格列表，grid 表示豆瓣风格网格，feed 表示想法流
+  // sidebar 表示文章页是否显示左侧目录树：true 显示，false 不显示（不显示时也没有上一篇下一篇）
   knowledgeBases: [
-    { folder: '读书笔记', id: 'reading', label: '读书笔记', type: 'grid' },
-    { folder: '投资之路', id: 'investing', label: '投资之路', type: 'list' },
-    { folder: '杂文随笔', id: 'essays', label: '杂文随笔', type: 'list' },
-    { folder: '想法', id: 'thoughts', label: '想法', type: 'feed' },
+    { folder: '读书笔记', id: 'reading', label: '读书笔记', type: 'grid', sidebar: false },
+    { folder: '投资之路', id: 'investing', label: '投资之路', type: 'list', sidebar: true },
+    { folder: '杂文随笔', id: 'essays', label: '杂文随笔', type: 'list', sidebar: false },
+    { folder: '浴室沉思', id: 'thoughts', label: '浴室沉思', type: 'feed' },
   ],
 
   // 关于页对应的文件，放在 content 目录下

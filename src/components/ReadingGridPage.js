@@ -5,15 +5,36 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Stars from './Stars';
 import styles from './ReadingGridPage.module.css';
 
-function BookCard({ post, index, colors, ratio }) {
+function BookCard({ post, index, colors, ratio, zoom }) {
   const color = colors[index % colors.length];
   const [broken, setBroken] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef(null);
   const showImg = post.cover && !broken;
+
+  // 图片在脚本接管前就已经加载完成时，onLoad 不会再触发，这里补一次
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) setLoaded(true);
+  }, []);
+
   return (
-    <li className={styles.card}>
+    <li className={`${styles.card} book-card`}>
       <Link to={post.url} className={styles.cardLink}>
-        <div className={styles.cover} style={{ aspectRatio: ratio, backgroundColor: showImg ? '#f2f2f2' : color }}>
-          {showImg && <img src={post.cover} alt="" loading="lazy" onError={() => setBroken(true)} />}
+        <div
+          className={`${styles.cover} book-cover`}
+          style={{ aspectRatio: ratio, backgroundColor: showImg ? '#f2f2f2' : color, '--cover-zoom': zoom }}
+        >
+          {showImg && (
+            <img
+              ref={imgRef}
+              src={post.cover}
+              alt=""
+              loading="lazy"
+              className={loaded ? 'is-loaded' : undefined}
+              onLoad={() => setLoaded(true)}
+              onError={() => setBroken(true)}
+            />
+          )}
         </div>
         <div className={styles.title}>{post.title}</div>
         <div className={styles.rating}>
@@ -53,7 +74,7 @@ export default function ReadingGridPage({ data }) {
 
   return (
     <Layout title={title} description={siteConfig.tagline}>
-      <main className={`page-wide ${styles.main}`}>
+      <main className={`page-col ${styles.main}`}>
         <h1 className={styles.kbTitle}>{title}</h1>
         {years.length === 0 && <p className={styles.empty}>这里还没有读书笔记。</p>}
         {years.slice(0, shown).map((y) => (
@@ -61,7 +82,14 @@ export default function ReadingGridPage({ data }) {
             <h2 className={styles.year}>{y.year}</h2>
             <ul className={styles.grid}>
               {y.posts.map((post) => (
-                <BookCard key={post.url} post={post} index={counter++} colors={site.placeholderColors} ratio={site.coverRatio} />
+                <BookCard
+                  key={post.url}
+                  post={post}
+                  index={counter++}
+                  colors={site.placeholderColors}
+                  ratio={site.coverRatio}
+                  zoom={site.coverZoom || 1}
+                />
               ))}
             </ul>
           </section>

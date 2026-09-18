@@ -1,0 +1,62 @@
+/* ==========================================================
+   微动效
+   关闭方式：删掉 docusaurus.config.js 里 customCss 数组中的 './src/css/motion.css' 这一行，
+   全部动效即失效，其他样式不受影响。
+   ========================================================== */
+
+:root {
+  --m-fast: 160ms;
+  --m-base: 260ms;
+  --m-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* 锚点跳转平滑滚动 */
+html { scroll-behavior: smooth; }
+
+/* 链接、导航、按钮的颜色过渡 */
+a,
+button,
+.navbar__link,
+.menu__link,
+.table-of-contents__link,
+.pagination-nav__link,
+.pagination-nav__label {
+  transition:
+    color var(--m-fast) ease,
+    background-color var(--m-fast) ease,
+    border-color var(--m-fast) ease,
+    text-decoration-color var(--m-fast) ease,
+    opacity var(--m-fast) ease;
+}
+
+/* 页脚图标：变色并轻微上浮 */
+.footer-icon { transition: color var(--m-fast) ease, transform var(--m-fast) ease; }
+.footer-icon:hover { transform: translateY(-1px); }
+
+/* 页面进入：淡入并上移 4px */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.page-col,
+.about-page main,
+html.docs-doc-page main > .container > .row {
+  animation: page-in var(--m-base) var(--m-ease) both;
+}
+
+/* 读书封面：加载后淡入，hover 放大并加深阴影 */
+.book-cover { transition: box-shadow var(--m-base) ease; }
+.book-cover img {
+  opacity: 0;
+  transition: transform var(--m-base) var(--m-ease), opacity var(--m-base) ease;
+}
+.book-cover img.is-loaded { opacity: 1; }
+.book-card:hover .book-cover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .book-cover img { opacity: 1; }
+}

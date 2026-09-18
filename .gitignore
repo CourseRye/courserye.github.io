@@ -6,3 +6,4 @@ build
 static/rss.xml
 .DS_Store
 npm-debug.log*
+.claude

@@ -282,6 +282,8 @@ function processDoc(file, outDir, kb, year) {
     `description: ${yaml(desc)}`,
     `date: ${date}`,
     'hide_title: false',
+    // 不显示左侧目录树的知识库，也不显示上一篇下一篇
+    ...(kb.sidebar === false ? ['pagination_prev: null', 'pagination_next: null'] : []),
     '---',
     '',
   ].join('\n');

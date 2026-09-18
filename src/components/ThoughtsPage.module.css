@@ -1,47 +1,47 @@
-.main { padding-top: 1rem; padding-bottom: 3rem; }
+.main { padding-top: var(--gap); padding-bottom: 3rem; }
 
+/* 知识库名称：标题二样式 */
 .kbTitle {
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: var(--ink-3);
-  letter-spacing: 0.08em;
-  margin: 1.5rem 0 0;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line);
+  font-size: 1.6em;
+  font-weight: 500;
+  line-height: var(--heading-lh);
+  color: var(--text);
+  margin: 0 0 var(--gap);
+  padding: 0.66em 0 0.27em;
 }
 
 .list { list-style: none; margin: 0; padding: 0; }
 
 .item {
-  padding: 2.5rem 0;
+  padding: calc(var(--gap) * 1.5) 0;
   border-bottom: 1px solid var(--line);
   scroll-margin-top: 5rem;
 }
+.item:first-child { padding-top: 0; }
 .item:last-child { border-bottom: 0; }
 
 .date {
   display: block;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  color: var(--ink-4);
-  margin-bottom: 1rem;
+  font-size: var(--text-size);
+  line-height: var(--text-lh);
+  color: var(--text-2);
+  margin-bottom: var(--gap);
   font-variant-numeric: tabular-nums;
 }
 
-.body { font-size: 1.05rem; line-height: 1.9; color: var(--ink-2); }
+/* 正文样式由全局的 .prose 提供 */
 .body :global(p:last-child) { margin-bottom: 0; }
-.body :global(img) { max-width: 100%; border-radius: 4px; }
 
-.more { display: flex; justify-content: center; padding: 2.5rem 0 0; }
+.more { display: flex; justify-content: center; padding: calc(var(--gap) * 1.5) 0 0; }
 .more button {
   background: none;
-  border: 1px solid var(--line);
-  color: var(--ink-3);
+  border: 1px solid var(--stroke);
+  color: var(--text-2);
   padding: 0.5rem 1.25rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 14px;
   cursor: pointer;
 }
-.more button:hover { color: var(--ink-1); border-color: var(--ink-4); }
+.more button:hover { color: var(--accent); border-color: var(--accent); }
 
-.empty { color: var(--ink-3); padding: 3rem 0; }
+.empty { color: var(--text-2); padding: var(--gap) 0; }

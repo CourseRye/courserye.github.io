@@ -12,7 +12,7 @@ export default function PostListPage({ data }) {
 
   return (
     <Layout title={pageTitle} description={siteConfig.tagline}>
-      <main className={`page-narrow ${styles.main}`}>
+      <main className={`page-col ${styles.main}`}>
         {title && <h1 className={styles.kbTitle}>{title}</h1>}
         {posts.length === 0 && <p className={styles.empty}>这里还没有文章。</p>}
         <ul className={styles.list}>
