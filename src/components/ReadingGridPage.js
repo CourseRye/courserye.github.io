@@ -70,7 +70,7 @@ export default function ReadingGridPage({ data }) {
   let counter = 0;
 
   return (
-    <Layout title={title} description={siteConfig.tagline}>
+    <Layout title={title} description={`${siteConfig.title}的${title}`}>
       <main className={`page-col ${styles.main}`}>
         {years.length === 0 && <p className={styles.empty}>这里还没有读书笔记。</p>}
         {years.slice(0, shown).map((y) => (

@@ -84,6 +84,23 @@ const config = {
     ...(site.googleAnalyticsId
       ? [['@docusaurus/plugin-google-gtag', { trackingID: site.googleAnalyticsId, anonymizeIP: true }]]
       : []),
+    // sitemap.xml：hidden 的知识库不收录
+    [
+      '@docusaurus/plugin-sitemap',
+      {
+        ignorePatterns: site.knowledgeBases.filter((kb) => kb.hidden).map((kb) => `/${kb.id}/**`),
+        changefreq: 'weekly',
+        priority: 0.5,
+      },
+    ],
+  ],
+
+  // RSS 自动发现：阅读器粘贴网址就能找到订阅源
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: { rel: 'alternate', type: 'application/rss+xml', title: site.siteName, href: '/rss.xml' },
+    },
   ],
 
   themes: [
@@ -104,6 +121,8 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      // 默认社交分享卡片（og:image），源文件在 scripts/assets/social-card.html
+      image: 'img/social-card.png',
       colorMode: {
         defaultMode: 'light',
         disableSwitch: true,

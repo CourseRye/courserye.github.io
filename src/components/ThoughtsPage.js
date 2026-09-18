@@ -23,7 +23,7 @@ export default function ThoughtsPage({ data }) {
   }, [shown, items.length, pageSize]);
 
   return (
-    <Layout title={title} description={siteConfig.tagline}>
+    <Layout title={title} description={`${siteConfig.title}的${title}`}>
       <main className={`page-col ${styles.main}`}>
         {items.length === 0 && <p className={styles.empty}>这里还没有想法。</p>}
         <ul className={styles.list}>

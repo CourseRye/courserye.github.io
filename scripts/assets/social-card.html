@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- 默认社交分享卡片（og:image）的源文件，1200×630。改完用 README 2.6 里的命令重新生成 static/img/social-card.png -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; background: #fff; }
+  body { display: flex; align-items: center; justify-content: center;
+         font-family: 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif; }
+  .card { display: flex; align-items: center; gap: 56px; }
+  img { width: 200px; height: 200px; border-radius: 44px; display: block; }
+  .name { font-size: 84px; font-weight: 500; color: #1c1e21; letter-spacing: 0.04em; line-height: 1.2; }
+  .slogan { margin-top: 18px; font-size: 34px; color: #888; letter-spacing: 0.06em; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: #dd4c4f; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img src="../../static/img/logo.png" alt="">
+    <div>
+      <div class="name">简单讲讲</div>
+      <div class="slogan">说点简单的。</div>
+    </div>
+  </div>
+  <div class="bar"></div>
+</body>
+</html>

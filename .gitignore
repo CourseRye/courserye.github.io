@@ -4,6 +4,8 @@ node_modules
 .generated
 build
 static/rss.xml
+static/robots.txt
+static/llms.txt
 .DS_Store
 npm-debug.log*
 .claude

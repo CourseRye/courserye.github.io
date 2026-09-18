@@ -75,6 +75,22 @@ content/
 2. 想重新处理某张封面（比如换了图但链接没变），删掉 static/covers 里对应的文件再构建
 3. 下载失败时页面退回原链接，构建不会中断，控制台会有提示
 
+### 2.6 SEO 与 AI 搜索
+
+以下都是构建时自动生成的，不用手动维护：
+
+1. sitemap.xml、robots.txt、llms.txt（给 AI 搜索引擎读的站点索引）
+2. 每篇文章的结构化数据（Article 加面包屑），读书笔记的分享配图用书封，其他页面用默认卡片
+3. hidden 的知识库：文章页 noindex，不进 sitemap，robots.txt 里 Disallow
+
+默认分享卡片是 static/img/social-card.png，源文件在 scripts/assets/social-card.html，改完用下面的命令重新生成：
+
+```
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --screenshot="$PWD/static/img/social-card.png" "file://$PWD/scripts/assets/social-card.html"
+```
+
+注意：GitHub Pages 会拒绝百度爬虫，百度收录需要另做国内镜像。
+
 ## 3.0 日常发布
 
 1. 在 Bear 里导出 Markdown，导出时不勾选 base64 Images 和 Export attachments

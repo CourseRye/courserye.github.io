@@ -308,6 +308,8 @@ function processDoc(file, outDir, kb, year) {
     'hide_title: false',
     // 不显示左侧目录树的知识库，也不显示上一篇下一篇
     ...(kb.sidebar === false ? ['pagination_prev: null', 'pagination_next: null'] : []),
+    // 私密分区不让搜索引擎收录，src/theme/DocItem/Metadata 据此输出 noindex
+    ...(kb.hidden ? ['noindex: true'] : []),
     '---',
     '',
   ].join('\n');
@@ -320,9 +322,11 @@ function processDoc(file, outDir, kb, year) {
   }
 
   const outName = path.basename(file).replace(/[★☆]/g, '').replace(/\s+\.md$/, '.md');
-  fs.writeFileSync(path.join(outDir, outName), fm + docBody + '\n');
+  const outFile = path.join(outDir, outName);
+  fs.writeFileSync(outFile, fm + docBody + '\n');
 
   posts.push({
+    outFile,
     kb: kb.id,
     kbLabel: kb.label,
     title: info.title,
@@ -391,6 +395,16 @@ async function localizeCovers() {
 }
 
 async function finish() {
+// 封面处理完后，把封面写进文章的 image 字段，作为分享卡片（og:image）
+for (const p of posts) {
+  if (p.cover) {
+    const text = fs.readFileSync(p.outFile, 'utf8');
+    const m = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (m) fs.writeFileSync(p.outFile, `---\n${m[1]}\nimage: ${yaml(p.cover)}\n---\n${m[2]}`);
+  }
+  delete p.outFile;
+}
+
 // ---------- 排序与输出 ----------
 
 function byDateDesc(a, b) {
@@ -453,6 +467,47 @@ const rss = [
 ].join('\n');
 mkdirp(path.join(ROOT, 'static'));
 fs.writeFileSync(path.join(ROOT, 'static', 'rss.xml'), rss);
+
+// robots.txt：全部放行（包括 AI 爬虫），私密分区除外，并指明 sitemap
+const hiddenKbs = config.knowledgeBases.filter((kb) => kb.hidden);
+const robots = [
+  'User-agent: *',
+  'Allow: /',
+  ...hiddenKbs.map((kb) => `Disallow: /${kb.id}/`),
+  '',
+  `Sitemap: ${config.url}/sitemap.xml`,
+  '',
+].join('\n');
+fs.writeFileSync(path.join(ROOT, 'static', 'robots.txt'), robots);
+
+// llms.txt：给 AI 搜索引擎读的站点索引，纯文本，不含私密分区
+const visibleKbs = config.knowledgeBases.filter((kb) => !kb.hidden);
+const llms = [
+  `# ${config.siteName}`,
+  '',
+  `> ${config.siteDescription}`,
+  '',
+  `个人博客，内容分为${visibleKbs.map((kb) => kb.label).join('、')}。语言：简体中文。`,
+  '',
+  `- 关于作者：${config.url}/about`,
+  `- RSS 订阅：${config.url}/rss.xml`,
+  '',
+  ...visibleKbs.flatMap((kb) => {
+    if (kb.type === 'feed') {
+      return [`## ${kb.label}`, '', `- 短想法的时间流：${config.url}/${kb.id}`, ''];
+    }
+    const items = posts.filter((p) => p.kb === kb.id);
+    return [
+      `## ${kb.label}`,
+      '',
+      `列表：${config.url}/${kb.id}`,
+      '',
+      ...items.map((p) => `- [${p.title}](${config.url}${p.url})${p.desc ? `：${p.desc}` : ''}`),
+      '',
+    ];
+  }),
+].join('\n');
+fs.writeFileSync(path.join(ROOT, 'static', 'llms.txt'), llms);
 
 console.log(`[prepare] 文章 ${posts.length} 篇，想法 ${thoughts.length} 条，RSS ${rssItems.length} 条`);
 }
