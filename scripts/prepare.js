@@ -238,9 +238,13 @@ for (const kb of config.knowledgeBases) {
       thoughts.push({
         id: toSlug(path.basename(file, '.md')),
         date,
+        time: '23:59:59',
         html: md.render(body),
         text: plainText(body).replace(/\s+/g, ' ').trim(),
       });
+    });
+    walkHtml(kbDir, (file) => {
+      for (const memo of parseFlomo(fs.readFileSync(file, 'utf8'))) thoughts.push(memo);
     });
     continue;
   }
@@ -248,6 +252,63 @@ for (const kb of config.knowledgeBases) {
   const outDir = path.join(GEN, 'docs', kb.id);
   mkdirp(outDir);
   processFolder(kbDir, outDir, kb, null);
+}
+
+// flomo 导出的 html：每条笔记是一个 .memo，里面有时间、正文、附件。
+// 正文里的 #标签 全部去掉，只保留段落、列表、加粗、斜体、链接，图片沿用全站规则只保留 http 开头的。
+function parseFlomo(html) {
+  const memos = [];
+  const parts = html.split('<div class="memo">').slice(1);
+  for (const part of parts) {
+    const t = part.match(/<div class="time">\s*(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})\s*<\/div>/);
+    const c = part.match(/<div class="content">([\s\S]*?)<\/div>\s*<div class="files">([\s\S]*?)<\/div>\s*<\/div>/);
+    if (!t || !c) continue;
+    const [, date, time] = t;
+    let body = c[1] + c[2];
+    // 去掉标签
+    body = body.replace(/#[^\s<#]+/g, '');
+    // 只保留允许的标签：p ul ol li br strong b em i a img
+    body = body.replace(/<(\/?)(\w+)([^>]*)>/g, (m, close, tag, attrs) => {
+      tag = tag.toLowerCase();
+      if (['p', 'ul', 'ol', 'li', 'br', 'strong', 'b', 'em', 'i'].includes(tag)) return `<${close}${tag}>`;
+      if (tag === 'a') {
+        if (close) return '</a>';
+        const href = attrs.match(/href="([^"]*)"/);
+        return href ? `<a href="${href[1]}" target="_blank" rel="noopener">` : '<a>';
+      }
+      if (tag === 'img') {
+        const src = attrs.match(/src="([^"]*)"/);
+        return src && /^https?:\/\//.test(src[1]) ? `<img src="${src[1]}" alt="">` : '';
+      }
+      return '';
+    });
+    // flomo 里每行是一个 <p>，空 <p> 才是段落间隔；和 Bear 的规则对齐：相邻的行合成一段用 <br> 换行，空行分段
+    body = body.replace(/<p>\s*<\/p>/g, '<!--sep-->');
+    body = body.replace(/<\/p>\s*<p>/g, '<br>');
+    body = body.replace(/<!--sep-->/g, '');
+    // 去掉开头因为删标签而空出来的内容
+    body = body.replace(/^\s*(<p>\s*(<br>\s*)*<\/p>\s*|<br>\s*)+/, '').replace(/<p>\s*(<br>\s*)+/g, '<p>').trim();
+    const text = body
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!text && !/<img/.test(body)) continue;
+    memos.push({ id: `${date}-${time.replace(/:/g, '')}`, date, time, html: body, text });
+  }
+  return memos;
+}
+
+function walkHtml(dir, fn) {
+  for (const name of listDir(dir)) {
+    const p = path.join(dir, name);
+    if (isDir(p)) walkHtml(p, fn);
+    else if (/\.html?$/i.test(name)) fn(p);
+  }
 }
 
 function walk(dir, fn) {
@@ -412,7 +473,12 @@ function byDateDesc(a, b) {
   return b.order - a.order;
 }
 posts.sort(byDateDesc);
-thoughts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+// 按日期加时间倒序；md 想法只有日期，视作当天最晚
+thoughts.sort((a, b) => {
+  const ka = `${a.date} ${a.time || '23:59:59'}`;
+  const kb = `${b.date} ${b.time || '23:59:59'}`;
+  return ka < kb ? 1 : ka > kb ? -1 : 0;
+});
 
 fs.writeFileSync(path.join(GEN, 'data', 'posts.json'), JSON.stringify(posts, null, 2));
 fs.writeFileSync(path.join(GEN, 'data', 'thoughts.json'), JSON.stringify(thoughts, null, 2));

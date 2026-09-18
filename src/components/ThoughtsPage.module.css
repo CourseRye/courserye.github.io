@@ -5,16 +5,26 @@
 
 /* 条目之间留两个空行，不画分割线，与首页一致 */
 .item {
-  padding: 0 0 calc(var(--gap) * 2);
+  margin: 0 0 calc(var(--gap) * 2);
   scroll-margin-top: 5rem;
+  display: flow-root; /* 让内层卡片的负外边距不和条目间距合并 */
 }
-.item:last-child { padding-bottom: 0; }
+.item:last-child { margin-bottom: 0; }
 
-/* 正文样式由全局的 .prose 提供，正文与日期之间留一个空行 */
-.body { margin-bottom: var(--gap); }
+/* hover 时整条（正文加日期）显示淡灰圆角底色，向四周外扩 16px，文字位置不动；过渡在 motion.css 里 */
+.card {
+  display: block;
+  margin: -16px;
+  padding: 16px;
+  border-radius: 10px;
+}
+.item:hover .card { background-color: var(--bg-2); }
+
+/* 正文样式由全局的 .prose 提供，正文与日期之间留半个空行，让日期紧贴自己的正文 */
+.body { margin-bottom: calc(var(--gap) / 2); }
 .body :global(p:last-child) { margin-bottom: 0; }
 
-/* 日期在正文下方：与首页的日期行一致，正文字号，次要文字色 */
+/* 日期在正文下方：与首页的日期行一致，正文字号，次要文字色；hover 变主色 */
 .meta {
   margin: 0;
   font-size: var(--text-size);
@@ -22,6 +32,7 @@
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
 }
+.item:hover .meta { color: var(--accent); }
 
 .more { display: flex; justify-content: center; padding: calc(var(--gap) * 1.5) 0 0; }
 .more button {

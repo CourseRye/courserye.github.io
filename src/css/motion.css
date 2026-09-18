@@ -75,6 +75,10 @@ html.docs-doc-page main > .container > .row {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
+/* 浴室沉思：hover 时底色淡入，日期变色 */
+.thought-card { transition: background-color var(--m-base) var(--m-ease); }
+.thought-meta { transition: color var(--m-fast) ease; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }

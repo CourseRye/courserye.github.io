@@ -28,11 +28,13 @@ export default function ThoughtsPage({ data }) {
         {items.length === 0 && <p className={styles.empty}>这里还没有想法。</p>}
         <ul className={styles.list}>
           {items.slice(0, shown).map((t) => (
-            <li key={t.id} id={t.id} className={styles.item}>
-              <div className={`markdown prose ${styles.body}`} dangerouslySetInnerHTML={{ __html: t.html }} />
-              <p className={styles.meta}>
-                <time dateTime={t.date}>{t.date}</time>
-              </p>
+            <li key={t.id} id={t.id} className={`${styles.item} thought-item`}>
+              <div className={`${styles.card} thought-card`}>
+                <div className={`markdown prose ${styles.body}`} dangerouslySetInnerHTML={{ __html: t.html }} />
+                <p className={`${styles.meta} thought-meta`}>
+                  <time dateTime={t.date}>{t.date}</time>
+                </p>
+              </div>
             </li>
           ))}
         </ul>
