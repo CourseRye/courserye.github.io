@@ -25,15 +25,14 @@ export default function ThoughtsPage({ data }) {
   return (
     <Layout title={title} description={siteConfig.tagline}>
       <main className={`page-col ${styles.main}`}>
-        <h1 className={styles.kbTitle}>{title}</h1>
         {items.length === 0 && <p className={styles.empty}>这里还没有想法。</p>}
         <ul className={styles.list}>
           {items.slice(0, shown).map((t) => (
             <li key={t.id} id={t.id} className={styles.item}>
-              <time className={styles.date} dateTime={t.date}>
-                {t.date}
-              </time>
               <div className={`markdown prose ${styles.body}`} dangerouslySetInnerHTML={{ __html: t.html }} />
+              <p className={styles.meta}>
+                <time dateTime={t.date}>{t.date}</time>
+              </p>
             </li>
           ))}
         </ul>

@@ -75,7 +75,6 @@ export default function ReadingGridPage({ data }) {
   return (
     <Layout title={title} description={siteConfig.tagline}>
       <main className={`page-col ${styles.main}`}>
-        <h1 className={styles.kbTitle}>{title}</h1>
         {years.length === 0 && <p className={styles.empty}>这里还没有读书笔记。</p>}
         {years.slice(0, shown).map((y) => (
           <section key={y.year} className={styles.yearSection}>

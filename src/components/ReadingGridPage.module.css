@@ -1,25 +1,18 @@
-.main { padding-top: var(--gap); padding-bottom: 3rem; }
+/* 字号定为正文 15px，标题的 em 才和文章页一致 */
+.main { font-size: var(--text-size); padding-top: var(--gap); padding-bottom: 3rem; }
 
-/* 知识库名称：标题二样式 */
-.kbTitle {
+.yearSection { padding-bottom: calc(var(--gap) * 2); }
+.yearSection:last-of-type { padding-bottom: 0; }
+
+/* 年份：标题二样式 */
+.year {
   font-size: 1.6em;
   font-weight: 500;
   line-height: var(--heading-lh);
   color: var(--text);
   margin: 0 0 var(--gap);
   padding: 0.66em 0 0.27em;
-}
-
-.yearSection { padding-bottom: calc(var(--gap) * 2); }
-.yearSection:last-of-type { padding-bottom: 0; }
-
-/* 年份：正文字号，次要文字色 */
-.year {
-  font-size: var(--text-size);
-  font-weight: 400;
-  line-height: var(--text-lh);
-  color: var(--text-2);
-  margin: 0 0 var(--gap);
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
 }
 

@@ -105,18 +105,19 @@ html, body { background: var(--paper); }
 .navbar__logo { height: 1.75rem; width: 1.75rem; border-radius: 6px; overflow: hidden; }
 .navbar__logo img { border-radius: 6px; }
 .navbar__title {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 1.35rem;
-  letter-spacing: 0.04em;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: calc(var(--text-size) * 1.27); /* 标题三，约 19px */
+  line-height: var(--heading-lh);
+  letter-spacing: 0;
   color: var(--text);
 }
 .navbar__brand:hover .navbar__title { color: var(--text); }
 .navbar__link {
-  color: var(--text);
+  color: var(--text-2);
   font-size: var(--text-size);
   font-weight: 400;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   padding: 0.25rem 0.75rem;
 }
 .navbar__link:hover { color: var(--accent); }
@@ -124,9 +125,9 @@ html, body { background: var(--paper); }
   color: var(--accent);
   font-weight: 500;
 }
-.navbar-sidebar__brand .navbar__title { font-size: 1.2rem; }
+.navbar-sidebar__brand .navbar__title { font-size: calc(var(--text-size) * 1.27); }
 
-/* 页脚：站名、关于、RSS，间距与导航栏一致 */
+/* 页脚：版权、关于、RSS，间距与导航栏一致 */
 .footer {
   border-top: 1px solid var(--line);
   color: var(--text-2);
@@ -144,8 +145,8 @@ html, body { background: var(--paper); }
   color: var(--text-2);
 }
 .footer-brand {
-  font-family: var(--font-serif);
-  letter-spacing: 0.04em;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
   margin-right: 2rem;
 }
 .footer-icon {
@@ -430,5 +431,4 @@ html.docs-wrapper .theme-doc-sidebar-container { --doc-sidebar-width: 260px; }
 
 @media (max-width: 996px) {
   :root { --ifm-navbar-height: 3.75rem; }
-  .navbar__title { font-size: 1.2rem; }
 }

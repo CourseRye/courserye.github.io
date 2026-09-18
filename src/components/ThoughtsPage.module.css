@@ -1,36 +1,27 @@
-.main { padding-top: var(--gap); padding-bottom: 3rem; }
-
-/* 知识库名称：标题二样式 */
-.kbTitle {
-  font-size: 1.6em;
-  font-weight: 500;
-  line-height: var(--heading-lh);
-  color: var(--text);
-  margin: 0 0 var(--gap);
-  padding: 0.66em 0 0.27em;
-}
+/* 字号定为正文 15px，标题的 em 才和文章页一致 */
+.main { font-size: var(--text-size); padding-top: var(--gap); padding-bottom: 3rem; }
 
 .list { list-style: none; margin: 0; padding: 0; }
 
+/* 条目之间留两个空行，不画分割线，与首页一致 */
 .item {
-  padding: calc(var(--gap) * 1.5) 0;
-  border-bottom: 1px solid var(--line);
+  padding: 0 0 calc(var(--gap) * 2);
   scroll-margin-top: 5rem;
 }
-.item:first-child { padding-top: 0; }
-.item:last-child { border-bottom: 0; }
+.item:last-child { padding-bottom: 0; }
 
-.date {
-  display: block;
+/* 正文样式由全局的 .prose 提供，正文与日期之间留一个空行 */
+.body { margin-bottom: var(--gap); }
+.body :global(p:last-child) { margin-bottom: 0; }
+
+/* 日期在正文下方：与首页的日期行一致，正文字号，次要文字色 */
+.meta {
+  margin: 0;
   font-size: var(--text-size);
   line-height: var(--text-lh);
   color: var(--text-2);
-  margin-bottom: var(--gap);
   font-variant-numeric: tabular-nums;
 }
-
-/* 正文样式由全局的 .prose 提供 */
-.body :global(p:last-child) { margin-bottom: 0; }
 
 .more { display: flex; justify-content: center; padding: calc(var(--gap) * 1.5) 0 0; }
 .more button {

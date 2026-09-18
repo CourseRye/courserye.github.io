@@ -13,7 +13,6 @@ export default function PostListPage({ data }) {
   return (
     <Layout title={pageTitle} description={siteConfig.tagline}>
       <main className={`page-col ${styles.main}`}>
-        {title && <h1 className={styles.kbTitle}>{title}</h1>}
         {posts.length === 0 && <p className={styles.empty}>这里还没有文章。</p>}
         <ul className={styles.list}>
           {posts.map((post) => (
@@ -24,7 +23,7 @@ export default function PostListPage({ data }) {
               {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
               <p className={styles.meta}>
                 <time dateTime={post.date}>{post.date}</time>
-                <span className={styles.sep}>-</span>
+                <span className={styles.sep}>{'\t'}</span>
                 <Link to={`/${post.kb}`} className={styles.kb}>
                   {post.kbLabel}
                 </Link>
