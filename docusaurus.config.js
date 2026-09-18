@@ -1,10 +1,27 @@
 // @ts-check
 // Docusaurus 配置。日常改动请去 site.config.js，这个文件一般不用动。
 
+const fs = require('fs');
+const path = require('path');
 const site = require('./site.config');
 
-const docKbs = site.knowledgeBases.filter((kb) => kb.type !== 'feed');
+// 文件夹里一篇 .md 都没有的知识库会让 Docusaurus 报错，这里直接跳过
+function hasDocs(dir) {
+  if (!fs.existsSync(dir)) return false;
+  return fs.readdirSync(dir, { withFileTypes: true }).some((e) => {
+    if (e.name.startsWith('.') || e.name.startsWith('_')) return false;
+    return e.isDirectory() ? hasDocs(path.join(dir, e.name)) : /\.md$/i.test(e.name);
+  });
+}
+
+const docKbs = site.knowledgeBases.filter(
+  (kb) => kb.type !== 'feed' && hasDocs(path.join(__dirname, '.generated', 'docs', kb.id))
+);
 const feedKb = site.knowledgeBases.find((kb) => kb.type === 'feed');
+// 顶部导航栏：跳过 hidden 的知识库和没有文章的知识库
+const navKbs = site.knowledgeBases.filter(
+  (kb) => !kb.hidden && (kb.type === 'feed' || docKbs.includes(kb))
+);
 
 // 页脚图标：线条风格，与导航栏文字同色，hover 变红
 const svgAttrs =
@@ -111,7 +128,7 @@ const config = {
         },
         items: [
           { to: '/', label: '首页', position: 'left', activeBaseRegex: '^/(page/\\d+)?$' },
-          ...site.knowledgeBases.map((kb) => ({
+          ...navKbs.map((kb) => ({
             to: `/${kb.id}`,
             label: kb.label,
             position: 'left',

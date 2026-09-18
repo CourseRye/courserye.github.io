@@ -242,17 +242,26 @@ html.is-scrolled .navbar { box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote > :last-child { margin-bottom: 0; }
 
 /* 行内元素 */
+/* 链接：阅读时强调色无下划线；hover 或键盘选中时文字和图标一起变深红，并加一条细下划线 */
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a { color: var(--accent); text-decoration: none; }
-:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a:hover { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent); }
-/* 链接文字后跟一个强调色实心圆、白色斜向上箭头的小图标；图片链接和标题锚点不加 */
-:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a:not(.hash-link):not(:has(img))::after {
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a:is(:hover, :focus-visible) {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+/* 站外链接（http 开头）文字后跟一个实心圆、斜向上箭头镂空的小角标，颜色跟随文字；站内链接、图片链接和标题锚点不加 */
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) a[href^="http"]:not(.hash-link):not(:has(img))::after {
   content: '';
   display: inline-block;
-  width: 0.9em;
-  height: 0.9em;
-  margin-left: 0.25em;
-  vertical-align: -0.1em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%23dd4c4f'/%3E%3Cpath d='M8.5 15.5l7-7M10 8.5h5.5V14' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  width: 0.7em;
+  height: 0.7em;
+  margin-left: 0.2em;
+  vertical-align: 0.05em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='m'%3E%3Crect width='24' height='24' fill='white'/%3E%3Cpath d='M8.5 15.5l7-7M10 8.5h5.5V14' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='12' cy='12' r='12' fill='black' mask='url(%23m)'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cmask id='m'%3E%3Crect width='24' height='24' fill='white'/%3E%3Cpath d='M8.5 15.5l7-7M10 8.5h5.5V14' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/mask%3E%3Ccircle cx='12' cy='12' r='12' fill='black' mask='url(%23m)'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(strong, b) { font-weight: 700; color: var(--accent); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) :is(em, i) { font-style: italic; }

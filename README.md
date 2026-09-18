@@ -59,7 +59,13 @@ content/
 
 ### 2.4 新增知识库
 
-在 content 下新建文件夹，然后在 site.config.js 的 knowledgeBases 里加一行。
+在 content 下新建文件夹，然后在 site.config.js 的 knowledgeBases 里加一行，数组顺序就是顶部导航栏的顺序。
+
+想做一个「私密分区」（不进顶部导航栏、没有列表页、首页日期旁的分类名不可点击、文章只能从首页进入），在那一行加上 `hidden: true`，参考「自我」的写法。
+
+文件夹里一篇文章都没有的知识库会被自动跳过，导航栏也不显示，放进第一篇文章后自动出现。
+
+注意：本地预览（npm start）运行期间改了 knowledgeBases（新增、删除、改 id），必须停掉 npm start 再重新启动，否则新知识库的文章页会报错「Cannot read properties of undefined」。另外不要在 npm start 运行期间跑 npm run build，两者共用缓存目录，会互相干扰。
 
 ## 3.0 日常发布
 

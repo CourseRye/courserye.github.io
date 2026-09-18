@@ -35,22 +35,26 @@ module.exports = {
   // 浴室沉思在 RSS 里的标题后缀，最终标题形如「2026-05-05 想法」
   thoughtTitleSuffix: '想法',
 
-  // 四个知识库，folder 是 content 目录下的文件夹名，改文件夹名时同步改这里
+  // 知识库列表，顺序就是顶部导航栏的顺序。folder 是 content 目录下的文件夹名，改文件夹名时同步改这里
   // type 有三种：list 表示 Chalk 风格列表，grid 表示豆瓣风格网格，feed 表示想法流
   // sidebar 表示文章页是否显示左侧目录树：true 显示，false 不显示（不显示时也没有上一篇下一篇）
+  // hidden: true 表示「私密分区」：不进顶部导航栏，不生成列表页，首页日期旁的分类名不可点击，文章只能从首页进入
+  // 文件夹里一篇文章都没有的知识库会自动跳过，导航栏也不显示，放进第一篇文章后自动出现
   knowledgeBases: [
     { folder: '读书笔记', id: 'reading', label: '读书笔记', type: 'grid', sidebar: false },
     { folder: '投资之路', id: 'investing', label: '投资之路', type: 'list', sidebar: true },
     { folder: '杂文随笔', id: 'essays', label: '杂文随笔', type: 'list', sidebar: false },
+    { folder: '好奇心万岁', id: 'curiosity', label: '好奇心万岁', type: 'list', sidebar: false },
     { folder: '浴室沉思', id: 'thoughts', label: '浴室沉思', type: 'feed' },
+    { folder: '自我', id: 'self', label: '自我', type: 'list', sidebar: false, hidden: true },
   ],
 
   // 关于页对应的文件，放在 content 目录下
   aboutFile: '关于.md',
 
   // 首页收录哪些知识库，用上面的 id
-  homeIncludes: ['reading', 'investing', 'essays'],
+  homeIncludes: ['reading', 'investing', 'essays', 'curiosity', 'self'],
 
   // RSS 收录哪些知识库
-  rssIncludes: ['reading', 'investing', 'essays', 'thoughts'],
+  rssIncludes: ['reading', 'investing', 'essays', 'curiosity', 'self', 'thoughts'],
 };

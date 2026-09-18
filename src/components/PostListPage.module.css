@@ -50,5 +50,7 @@
 .sep { white-space: pre; tab-size: 4; }
 .kb { color: var(--text-2); text-decoration: none; }
 .kb:hover { color: var(--accent); text-decoration: none; }
+/* 私密分区的分类名：和链接同色，但不可点击，hover 也不变色 */
+.kbStatic { color: var(--text-2); }
 
 .empty { color: var(--text-2); padding: var(--gap) 0; }

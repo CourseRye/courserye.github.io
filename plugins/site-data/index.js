@@ -42,6 +42,8 @@ module.exports = function siteDataPlugin(context) {
       await addListRoutes('/', null, 'home', homePosts);
 
       for (const kb of site.knowledgeBases) {
+        // hidden 的知识库不生成列表页，文章只能从首页进入
+        if (kb.hidden) continue;
         if (kb.type === 'list') {
           await addListRoutes(`/${kb.id}`, kb.label, kb.id, content.posts.filter((p) => p.kb === kb.id));
         } else if (kb.type === 'grid') {
