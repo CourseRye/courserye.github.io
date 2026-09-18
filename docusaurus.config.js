@@ -43,6 +43,9 @@ const config = {
     faster: true,
   },
 
+  // 滚动后给导航栏加阴影
+  clientModules: ['./src/client/navbar-shadow.js'],
+
   plugins: [
     ...docKbs.map((kb) => [
       '@docusaurus/plugin-content-docs',

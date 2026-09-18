@@ -46,6 +46,9 @@ button,
 }
 .back-to-top:active { transition-duration: var(--m-fast); }
 
+/* 导航栏阴影淡入淡出 */
+.navbar { transition: box-shadow var(--m-base) ease; }
+
 /* 页脚图标：变色并轻微上浮 */
 .footer-icon { transition: color var(--m-fast) ease, transform var(--m-fast) ease; }
 .footer-icon:hover { transform: translateY(-1px); }

@@ -94,11 +94,14 @@ html, body { background: var(--paper); }
 }
 
 /* ---------- 3.0 导航栏与页脚 ---------- */
+/* 导航栏：没有底边线，页面滚动离开顶部后显示一层很轻的阴影（src/client/navbar-shadow.js 负责加 is-scrolled） */
 .navbar {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 0;
+  box-shadow: none;
   padding-left: var(--gutter);
   padding-right: var(--gutter);
 }
+html.is-scrolled .navbar { box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06); }
 .navbar__inner {
   max-width: var(--col);
   margin: 0 auto;
