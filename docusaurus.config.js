@@ -60,8 +60,8 @@ const config = {
     faster: true,
   },
 
-  // 滚动后给导航栏加阴影
-  clientModules: ['./src/client/navbar-shadow.js'],
+  // 滚动后给导航栏加阴影；切换页面时直接跳到顶部而不是平滑滚动
+  clientModules: ['./src/client/navbar-shadow.js', './src/client/instant-route-scroll.js'],
 
   plugins: [
     ...docKbs.map((kb) => [
