@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import Stars from './Stars';
 import styles from './ReadingGridPage.module.css';
 
@@ -48,12 +49,31 @@ function BookCard({ post, index, colors, ratio, zoom }) {
   );
 }
 
+// 记住「已展开到第几年」，从文章返回时先把这些年份渲染出来，滚动位置才能精确恢复，图片也走缓存不重复请求
+const SHOWN_KEY = 'reading-shown';
+function loadShown(max) {
+  try {
+    const n = parseInt(sessionStorage.getItem(SHOWN_KEY), 10);
+    return n >= 1 ? Math.min(n, max) : 1;
+  } catch (e) {
+    return 1;
+  }
+}
+
 export default function ReadingGridPage({ data }) {
   const { siteConfig } = useDocusaurusContext();
   const site = siteConfig.customFields.site;
   const { title, years } = data;
-  const [shown, setShown] = useState(1);
+  // 首次整页加载时 isBrowser 为 false，保持和服务端渲染一致；站内跳转过来时直接用记住的值
+  const isBrowser = useIsBrowser();
+  const [shown, setShown] = useState(() => (isBrowser ? loadShown(years.length) : 1));
   const sentinel = useRef(null);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(SHOWN_KEY, String(shown));
+    } catch (e) {}
+  }, [shown]);
 
   useEffect(() => {
     if (!sentinel.current || shown >= years.length) return undefined;
