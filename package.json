@@ -15,6 +15,7 @@
     "@docusaurus/preset-classic": "3.10.2",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
+    "lxgw-wenkai-lite-webfont": "^1.7.0",
     "markdown-it": "^15.0.1",
     "pinyin-pro": "^3.29.3",
     "prism-react-renderer": "^2.3.0",

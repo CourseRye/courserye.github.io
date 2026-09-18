@@ -12,8 +12,9 @@
 /* ---------- 1.0 设计变量 ---------- */
 :root {
   /* 来自 HTML 模板 */
-  --text: #444444;      /* 正文 */
+  --text: #1c1e21;      /* 正文 */
   --text-2: #888888;    /* 次要文字：日期、分类、年份 */
+  --quote: #666666;     /* 引用文字 */
   --text-3: #d9d9d9;    /* 更淡的文字：禁用态 */
   --bg-2: #f3f5f7;      /* 代码背景、表格隔行 */
   --stroke: #d9d9d9;    /* 表格线、分割线 */
@@ -35,6 +36,7 @@
   --font-sans: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', 'Microsoft YaHei', 'Noto Sans CJK SC', Arial, sans-serif;
   --font-serif: 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Source Han Serif SC', Georgia, serif;
   --font-mono: Menlo, 'SF Mono', Consolas, 'Liberation Mono', monospace;
+  --font-kai: 'LXGW WenKai Lite', 'LXGW WenKai', 'Kaiti SC', 'STKaiti', 'KaiTi', serif; /* 引用，网页字体随站打包 */
 
   --ifm-font-family-base: var(--font-sans);
   --ifm-font-family-monospace: var(--font-mono);
@@ -204,26 +206,36 @@ html, body { background: var(--paper); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) li > p { margin: 0; }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) li input[type='checkbox'] { margin-right: 0.4em; }
 
-/* 引用：左侧一条圆角的强调色细条 */
+/* 引用：楷体、次深灰，开头一个大号「“」，结尾一个「”」靠右，字号不变 */
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote {
   position: relative;
   margin: 0 0 var(--gap);
-  padding: 0 0 0 2.13em;
+  padding: 0 1.5em;
   border: 0;
-  color: var(--text);
+  font-family: var(--font-kai);
+  color: var(--quote);
   font-size: inherit;
 }
-:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote::before {
-  content: '';
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote::before,
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote::after {
   position: absolute;
-  top: 0.2em;
-  left: 1em;
-  width: 0.13em;
-  height: calc(100% - 0.4em);
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 0.33em;
+  font-family: var(--font-kai);
+  font-size: 2em;
+  line-height: 1;
+  color: var(--quote);
 }
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote::before {
+  content: '“';
+  left: 0;
+  top: 0;
+}
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote::after {
+  content: '”';
+  right: 0;
+  bottom: 0;
+  transform: translateY(0.3em);
+}
+:is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote :is(p, li) { color: var(--quote); }
 :is(.theme-doc-markdown.markdown, .about-page main article, .prose.markdown) blockquote > :last-child { margin-bottom: 0; }
 
 /* 行内元素 */
@@ -358,17 +370,67 @@ html.docs-wrapper .theme-doc-sidebar-container { --doc-sidebar-width: 260px; }
   opacity: 0.55;
 }
 
-/* 右侧文内目录 */
+/* 右侧文内目录（组件在 src/theme/TOC）
+   默认收起：每个标题一条横线，长度按层级递减，当前章节变红；鼠标移入展开文字并恢复层级缩进；图钉可固定 */
+.toc-panel {
+  position: relative;
+  padding-top: 1.75rem; /* 给右上角的图钉留位置 */
+}
 .table-of-contents {
   font-size: 13px;
   line-height: 1.6;
-  padding-left: 1rem;
-  border-left: 1px solid var(--stroke);
+  padding-left: 1.75rem; /* 最长的横线 16px 加间距 */
+  border-left: 0;
 }
-.table-of-contents__link { color: var(--text-2); }
+/* 层级缩进只靠子级 ul 的内边距控制，条目本身不带左右外边距，收起时才能对齐 */
+.table-of-contents li { margin-left: 0; margin-right: 0; }
+.table-of-contents ul { padding-left: 1.25rem; }
+.table-of-contents__link {
+  position: relative;
+  display: inline-block;
+  color: var(--text-2);
+}
 .table-of-contents__link:hover,
 .table-of-contents__link--active { color: var(--accent); }
-.table-of-contents ul { padding-left: 0.75rem; }
+/* 每条标题左侧的横线：h2 16px，h3 10px，h4 及更深 6px */
+.table-of-contents__link::before {
+  content: '';
+  position: absolute;
+  left: -1.75rem;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--stroke);
+  transform: translateY(-50%);
+}
+.table-of-contents ul .table-of-contents__link::before { width: 10px; }
+.table-of-contents ul ul .table-of-contents__link::before { width: 6px; }
+.table-of-contents__link--active::before { background: var(--accent); }
+/* 收起态：文字透明只留横线，子级不缩进让横线左对齐，图钉隐藏；移入、键盘聚焦或已固定时展开 */
+.toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .table-of-contents__link { color: transparent; }
+.toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .table-of-contents ul { padding-left: 0; }
+.toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .toc-pin { opacity: 0; }
+/* 图钉：固定后实心 */
+.toc-pin {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.toc-pin:hover { color: var(--accent); }
+.toc-panel--pinned .toc-pin { color: var(--accent); }
+.toc-panel--pinned .toc-pin svg { fill: currentColor; }
 
 /* 宽屏：正文列居中并与导航栏对齐，目录树挂在左侧，文内目录挂在右侧 */
 @media (min-width: 1300px) {
@@ -419,6 +481,69 @@ html.docs-wrapper .theme-doc-sidebar-container { --doc-sidebar-width: 260px; }
   font-size: var(--text-size);
 }
 .pagination-nav__link:hover .pagination-nav__label { color: var(--accent); }
+
+/* ---------- 5.5 文章页：无导航栏与页脚、封面居中、上下渐隐、回顶按钮 ---------- */
+html.docs-doc-page {
+  --fade: 88px;                 /* 上下渐隐区高度 */
+  --ifm-navbar-height: var(--fade); /* 导航栏已隐藏，借这个变量让目录树、锚点定位都避开顶部渐隐区 */
+}
+html.docs-doc-page .navbar,
+html.docs-doc-page .footer { display: none; }
+html.docs-doc-page main > .container { padding-top: var(--fade) !important; } /* 主题的 padding-top--md 带 !important */
+html.docs-doc-page main > .container > .row > .col.col--3 { top: 0; }
+
+/* 封面在前、标题居中：生成脚本把标题放在封面图之后 */
+.theme-doc-markdown.markdown > p:first-child > img { margin-left: auto; margin-right: auto; }
+.theme-doc-markdown.markdown > p:first-child + header h1 { text-align: center; }
+
+/* 视口上下各一条渐隐，白到透明，不挡鼠标 */
+html.docs-doc-page body::before,
+html.docs-doc-page body::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: var(--fade);
+  pointer-events: none;
+  z-index: 50;
+}
+html.docs-doc-page body::before { top: 0; background: linear-gradient(var(--paper), rgba(255, 255, 255, 0)); }
+html.docs-doc-page body::after { bottom: 0; background: linear-gradient(rgba(255, 255, 255, 0), var(--paper)); }
+
+/* 回到顶部：32px 小圆钮，底部居中放在渐隐区里，向上滚动时出现（组件在 src/theme/BackToTopButton） */
+.back-to-top {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--stroke);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--text-2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 8px) scale(0.8);
+}
+.back-to-top--show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0) scale(1);
+}
+.back-to-top:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  transform: translate(-50%, -2px) scale(1.08);
+}
+.back-to-top:active { transform: translate(-50%, 0) scale(0.9); }
 
 /* ---------- 6.0 关于页 ---------- */
 .about-page main {

@@ -71,7 +71,12 @@ const config = {
       '@docusaurus/theme-classic',
       {
         // motion.css 是全站微动效，想关掉时删掉下面这一行即可
-        customCss: ['./src/css/custom.css', './src/css/motion.css'],
+        customCss: [
+          // 引用用的霞鹜文楷，按字符区间切片，页面只下载用到的部分
+          require.resolve('lxgw-wenkai-lite-webfont/lxgwwenkailite-regular.css'),
+          './src/css/custom.css',
+          './src/css/motion.css',
+        ],
       },
     ],
   ],

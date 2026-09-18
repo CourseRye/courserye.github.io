@@ -288,8 +288,15 @@ function processDoc(file, outDir, kb, year) {
     '',
   ].join('\n');
 
+  // 正文以封面图开头时，标题放在封面图之后（Docusaurus 识别到正文里的一级标题后就不再另外渲染顶部标题）
+  let docBody = body;
+  const coverLine = body.match(/^(!\[[^\]]*\]\(https?:\/\/[^)]*\)|<img\b[^>]*>)\s*\n/);
+  if (coverLine) {
+    docBody = coverLine[0].trimEnd() + '\n\n# ' + info.title.replace(/#/g, '') + '\n\n' + body.slice(coverLine[0].length);
+  }
+
   const outName = path.basename(file).replace(/[★☆]/g, '').replace(/\s+\.md$/, '.md');
-  fs.writeFileSync(path.join(outDir, outName), fm + body + '\n');
+  fs.writeFileSync(path.join(outDir, outName), fm + docBody + '\n');
 
   posts.push({
     kb: kb.id,

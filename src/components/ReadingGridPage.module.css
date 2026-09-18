@@ -62,33 +62,6 @@
 
 .rating { margin-top: 0.15em; line-height: 1; }
 
-.tooltip {
-  display: none;
-  position: absolute;
-  z-index: 20;
-  top: 0;
-  left: 100%;
-  margin-left: 0.75rem;
-  width: 18rem;
-  max-width: 60vw;
-  padding: 1rem 1.1rem;
-  background: #fff;
-  border: 1px solid var(--stroke);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.7;
-  pointer-events: none;
-}
-.card:nth-child(4n) .tooltip,
-.card:nth-child(4n-1) .tooltip { left: auto; right: 100%; margin-left: 0; margin-right: 0.75rem; }
-.tooltipTitle { color: var(--text); font-size: var(--text-size); margin-bottom: 0.4em; }
-
-@media (hover: hover) and (min-width: 900px) {
-  .card:hover .tooltip { display: block; }
-}
-
 .more { display: flex; justify-content: center; padding: calc(var(--gap) * 1.5) 0 0; }
 .more button {
   background: none;

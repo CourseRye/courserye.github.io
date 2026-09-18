@@ -29,6 +29,24 @@ button,
     opacity var(--m-fast) ease;
 }
 
+/* 右侧目录：文字淡入淡出，层级缩进展开，横线变色，图钉淡入 */
+.toc-panel .table-of-contents__link { transition: color var(--m-base) var(--m-ease); }
+.toc-panel .table-of-contents ul { transition: padding-left var(--m-base) var(--m-ease); }
+.toc-panel .table-of-contents__link::before { transition: background-color var(--m-fast) ease; }
+.toc-pin { transition: opacity var(--m-base) var(--m-ease), color var(--m-fast) ease; }
+
+/* 回到顶部：出现、hover 上浮放大、按下回弹 */
+.back-to-top {
+  transition:
+    opacity var(--m-base) var(--m-ease),
+    visibility var(--m-base),
+    transform var(--m-base) var(--m-ease),
+    color var(--m-fast) ease,
+    border-color var(--m-fast) ease,
+    box-shadow var(--m-base) ease;
+}
+.back-to-top:active { transition-duration: var(--m-fast); }
+
 /* 页脚图标：变色并轻微上浮 */
 .footer-icon { transition: color var(--m-fast) ease, transform var(--m-fast) ease; }
 .footer-icon:hover { transform: translateY(-1px); }

@@ -1,0 +1,11 @@
+/* 与主题自带的目录容器一致：吸顶、超高时内部滚动 */
+.tableOfContents {
+  max-height: calc(100vh - (var(--ifm-navbar-height) + 2rem));
+  overflow-y: auto;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+@media (max-width: 996px) {
+  .tableOfContents { display: none; }
+}

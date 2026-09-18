@@ -40,12 +40,6 @@ function BookCard({ post, index, colors, ratio, zoom }) {
         <div className={styles.rating}>
           <Stars count={post.stars} />
         </div>
-        {post.hover && (
-          <div className={styles.tooltip} role="tooltip">
-            <div className={styles.tooltipTitle}>{post.title}</div>
-            <div className={styles.tooltipBody}>{post.hover}</div>
-          </div>
-        )}
       </Link>
     </li>
   );
