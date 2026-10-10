@@ -396,7 +396,7 @@ html.docs-wrapper .theme-doc-sidebar-container { --doc-sidebar-width: 260px; }
    默认收起：每个标题一条横线，长度按层级递减，当前章节变红；鼠标移入展开文字并恢复层级缩进；图钉可固定 */
 .toc-panel {
   position: relative;
-  padding-top: 1.75rem; /* 给右上角的图钉留位置 */
+  padding-top: 1.75rem; /* 给左上角的图钉留位置 */
 }
 .table-of-contents {
   font-size: 13px;
@@ -433,14 +433,14 @@ html.docs-wrapper .theme-doc-sidebar-container { --doc-sidebar-width: 260px; }
 .toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .table-of-contents__link { color: transparent; }
 .toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .table-of-contents ul { padding-left: 0; }
 .toc-panel:not(:hover):not(:has(:focus-visible)):not(.toc-panel--pinned) .toc-pin { opacity: 0; }
-/* 图钉：固定后实心 */
+/* 图钉：固定后实心；图标靠左，图形左缘与横线左缘对齐（图形在 16px 图标里左侧留白约 4px） */
 .toc-pin {
   position: absolute;
   top: 0;
-  right: 0;
+  left: -4px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 1.75rem;
   height: 1.75rem;
   padding: 0;
@@ -531,6 +531,24 @@ html.docs-doc-page body::after {
 }
 html.docs-doc-page body::before { top: 0; background: linear-gradient(var(--paper), rgba(255, 255, 255, 0)); }
 html.docs-doc-page body::after { bottom: 0; background: linear-gradient(rgba(255, 255, 255, 0), var(--paper)); }
+
+/* 阅读进度条：贴视口顶端，2px 主题红，前端一段淡出成透明（组件在 src/components/ReadingProgress.js） */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 100; /* 盖在顶部渐隐区上面 */
+}
+.reading-progress__bar {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent) calc(100% - 48px), rgba(221, 76, 79, 0));
+  transform: translateX(-100%);
+  will-change: transform;
+}
 
 /* 回到顶部：32px 小圆钮，底部居中放在渐隐区里，向上滚动时出现（组件在 src/theme/BackToTopButton） */
 .back-to-top {

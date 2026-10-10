@@ -3,6 +3,7 @@ import Head from '@docusaurus/Head';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import PostLink from './PostLink';
 import Pagination from './Pagination';
 import styles from './PostListPage.module.css';
 
@@ -40,7 +41,7 @@ export default function PostListPage({ data }) {
           {posts.map((post) => (
             <li key={post.url} className={styles.item}>
               <h2 className={styles.title}>
-                <Link to={post.url}>{post.title}</Link>
+                <PostLink to={post.url}>{post.title}</PostLink>
               </h2>
               {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
               <p className={styles.meta}>

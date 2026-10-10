@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '@theme/Layout';
-import Link from '@docusaurus/Link';
+import PostLink from './PostLink';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import Stars from './Stars';
@@ -22,7 +22,7 @@ function BookCard({ post, index, colors, ratio, zoom }) {
 
   return (
     <li className={`${styles.card} book-card`}>
-      <Link to={post.url} className={styles.cardLink}>
+      <PostLink to={post.url} className={styles.cardLink}>
         <div
           className={`${styles.cover} book-cover`}
           style={{ aspectRatio: ratio, backgroundColor: showImg ? '#f2f2f2' : color, '--cover-zoom': coverZoom }}
@@ -44,7 +44,7 @@ function BookCard({ post, index, colors, ratio, zoom }) {
         <div className={styles.rating}>
           <Stars count={post.stars} />
         </div>
-      </Link>
+      </PostLink>
     </li>
   );
 }
