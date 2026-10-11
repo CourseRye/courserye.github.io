@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import PostLink from './PostLink';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import { useHistory } from '@docusaurus/router';
 import Stars from './Stars';
 import styles from './ReadingGridPage.module.css';
 
@@ -68,6 +69,10 @@ export default function ReadingGridPage({ data }) {
   const isBrowser = useIsBrowser();
   const [shown, setShown] = useState(() => (isBrowser ? loadShown(years.length) : 1));
   const sentinel = useRef(null);
+  const mainRef = useRef(null);
+  // 整页打开或从别处点进来时播放入场动画；浏览器后退回来要恢复滚动位置，不播
+  const history = useHistory();
+  const reveal = useRef(!isBrowser || history.action !== 'POP');
 
   useEffect(() => {
     try {
@@ -87,15 +92,48 @@ export default function ReadingGridPage({ data }) {
     return () => io.disconnect();
   }, [shown, years.length]);
 
+  // 入场：书本进入视口时淡入上移，同一批进入的按从上到下、从左到右依次错开（样式在 motion.css）
+  useEffect(() => {
+    if (!reveal.current || !mainRef.current) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    // 新渲染出来的书先藏起来；上一轮还没进入视口的书继续等着
+    mainRef.current
+      .querySelectorAll('.book-card:not(.is-pending):not(.is-revealed)')
+      .forEach((el) => el.classList.add('is-pending'));
+    const cards = mainRef.current.querySelectorAll('.book-card.is-pending');
+    if (cards.length === 0) return undefined;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hits = entries
+          .filter((e) => e.isIntersecting)
+          .map((e) => e.target)
+          .sort((a, b) => a.offsetTop - b.offsetTop || a.offsetLeft - b.offsetLeft);
+        hits.forEach((el, i) => {
+          io.unobserve(el);
+          el.style.setProperty('--reveal-delay', `${Math.min(i, 8) * 50}ms`);
+          el.classList.replace('is-pending', 'is-revealed');
+        });
+      },
+      { rootMargin: '0px 0px -40px 0px' }
+    );
+    cards.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [shown]);
+
   let counter = 0;
 
   return (
     <Layout title={title} description={`${siteConfig.title}的${title}`}>
-      <main className={`page-col ${styles.main}`}>
+      <main ref={mainRef} className={`page-col ${styles.main}`}>
         {years.length === 0 && <p className={styles.empty}>这里还没有读书笔记。</p>}
         {years.slice(0, shown).map((y) => (
           <section key={y.year} className={styles.yearSection}>
-            <h2 className={styles.year}>{y.year}</h2>
+            {/* 年份和本数同一行，中间一个 tab */}
+            <h2 className={styles.year}>
+              {y.year}
+              {'\t'}
+              <span className={styles.count}>{y.posts.length}</span>
+            </h2>
             <ul className={styles.grid}>
               {y.posts.map((post) => (
                 <BookCard

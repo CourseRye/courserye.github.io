@@ -40,8 +40,9 @@ function parseName(name) {
     date = m[1];
     base = base.slice(m[0].length);
   }
+  // 去掉序号后至少要剩下书名以外的文字，像「1984 ★★★★★」这种数字就是书名本身
   m = base.match(/^(\d+)[.\s_-]+/);
-  if (m) {
+  if (m && base.slice(m[0].length).replace(/[★☆\s]/g, '')) {
     order = parseInt(m[1], 10);
     base = base.slice(m[0].length);
   }

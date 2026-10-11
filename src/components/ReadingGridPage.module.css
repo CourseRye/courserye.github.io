@@ -14,7 +14,10 @@
   padding: 0.66em 0 0.27em;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
+  white-space: pre;
+  tab-size: 4;
 }
+.count { color: var(--text-2); }
 
 /* 720 宽的内容列里一行四本 */
 .grid {
@@ -24,19 +27,37 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: var(--gutter);
-  row-gap: var(--gap);
+  row-gap: calc(var(--gap) * 1.5);
 }
 
 .card { position: relative; min-width: 0; }
 .cardLink { display: block; color: inherit; text-decoration: none; }
 .cardLink:hover { text-decoration: none; }
 
-/* 封面：图片按 --cover-zoom 放大后只露出中间的书封，hover 再放大 4% */
+/* 封面：图片按 --cover-zoom 放大后只露出中间的书封；左侧书脊阴影、右侧小圆角，看起来像一本书 */
 .cover {
+  position: relative;
   width: 100%;
   overflow: hidden;
+  border-radius: 1px 3px 3px 1px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
   transform: translateZ(0);
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.16) 0,
+    rgba(0, 0, 0, 0.04) 1.6%,
+    rgba(255, 255, 255, 0.22) 2.6%,
+    rgba(255, 255, 255, 0) 4.5%,
+    rgba(0, 0, 0, 0.05) 6%,
+    rgba(0, 0, 0, 0) 9%
+  );
 }
 .cover img {
   display: block;
@@ -47,7 +68,11 @@
   transform: scale(var(--cover-zoom, 1));
   transform-origin: center;
 }
-.cardLink:hover .cover img { transform: scale(calc(var(--cover-zoom, 1) * 1.04)); }
+/* hover：整本书抬起 4px，投影拉长变柔 */
+.cardLink:hover .cover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.22), 0 4px 8px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
 
 .title {
   margin-top: 0.6em;
