@@ -13,6 +13,19 @@ module.exports = {
   // 网站地址，GitHub Pages 的地址
   url: 'https://courserye.github.io',
 
+  // 作者署名，用于结构化数据、llms.txt 和文章的 Markdown 版本，让搜索引擎和 AI 知道文章是谁写的
+  author: '青旗沽酒趁梨花',
+
+  // 站长平台的验证码，留空表示不输出。只填 content 里的那串字符
+  // Google Search Console：<meta name="google-site-verification" content="这一串">
+  googleSiteVerification: '',
+  // Bing Webmaster Tools：<meta name="msvalidate.01" content="这一串">
+  bingSiteVerification: '',
+
+  // IndexNow 密钥：每次部署后把改动过的网址主动推给 Bing 等搜索引擎（ChatGPT 搜索、Copilot 都用 Bing 的索引）
+  // 密钥是公开的，网站根目录会有一个同名 txt 文件证明网站归属；留空表示不推送
+  indexNowKey: '16ea581827787f58ed17a859ca636393',
+
   // Google Analytics 的衡量 ID，形如 G-XXXXXXXXXX，留空表示不启用
   googleAnalyticsId: 'G-P29E2CBXS2',
 

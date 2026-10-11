@@ -71,6 +71,20 @@ function gitDate(file) {
   return fs.statSync(file).mtime.toISOString().slice(0, 10);
 }
 
+// 文章的修改日期：首次提交之后又改过才算修改（只有一次提交说明是导入，用发布日期），
+// 已提交但本地又改了用文件修改时间，还没提交过的新文件用发布日期
+function gitModified(file, date) {
+  const q = file.replace(/"/g, '\\"');
+  try {
+    const run = (cmd) => execSync(cmd, { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    const commits = run(`git log --format=%aI -- "${q}"`).split('\n').filter(Boolean);
+    const dirty = run(`git status --porcelain -- "${q}"`);
+    if (dirty && commits.length) return fs.statSync(file).mtime.toISOString().slice(0, 10);
+    if (commits.length > 1) return commits[0].slice(0, 10);
+  } catch (e) {}
+  return date;
+}
+
 function toSlug(text) {
   const py = pinyin(text, { toneType: 'none', type: 'array', nonZh: 'consecutive' });
   return py
@@ -188,10 +202,15 @@ function paragraphs(body) {
     .filter((p) => p.length > 0);
 }
 
-// 搜索引擎和 RSS 用的摘要：第一段，超过 limit 截断
+// 搜索引擎和 RSS 用的摘要：第一段，超过 limit 时在 limit 以内最后一个句末标点处截断，AI 引用时不会停在半句；
+// 一整句都超过 limit 才硬截断并加省略号
 function excerpt(body, limit) {
   const first = paragraphs(body)[0] || '';
-  return first.length > limit ? first.slice(0, limit) + '…' : first;
+  if (first.length <= limit) return first;
+  const head = first.slice(0, limit);
+  const ends = [...head.matchAll(/[。！？!?…」』”]/g)];
+  const cut = ends.length ? ends[ends.length - 1].index + 1 : 0;
+  return cut >= limit / 3 ? head.slice(0, cut) : head + '…';
 }
 
 // 列表页用的简介：固定占两行，第一段不够两行（按每行约 45 字算）就接上后面的段落，段落之间用制表符隔开
@@ -219,6 +238,9 @@ rmrf(GEN);
 mkdirp(path.join(GEN, 'docs'));
 mkdirp(path.join(GEN, 'data'));
 mkdirp(path.join(GEN, 'pages'));
+// 构建产物里的额外静态文件（每篇文章的 Markdown 版本、llms-full.txt、IndexNow 密钥），在 docusaurus.config.js 的 staticDirectories 里登记
+const GEN_STATIC = path.join(GEN, 'static');
+mkdirp(GEN_STATIC);
 
 const posts = [];
 const thoughts = [];
@@ -359,6 +381,7 @@ function processDoc(file, outDir, kb, year) {
   usedUrls.add(url);
 
   const desc = excerpt(body, 120);
+  const modified = [date, gitModified(file, date)].sort().pop();
   const fm = [
     '---',
     `title: ${yaml(info.title)}`,
@@ -367,6 +390,9 @@ function processDoc(file, outDir, kb, year) {
     `slug: ${yaml('/' + slug)}`,
     `description: ${yaml(desc)}`,
     `date: ${date}`,
+    `modified: ${modified}`,
+    // 读书笔记的星级，src/theme/DocItem/Metadata 据此输出书评（Review）结构化数据
+    ...(kb.type === 'grid' && info.stars != null ? [`stars: ${info.stars}`] : []),
     'hide_title: false',
     // 不显示左侧目录树的知识库，也不显示上一篇下一篇
     ...(kb.sidebar === false ? ['pagination_prev: null', 'pagination_next: null'] : []),
@@ -387,9 +413,18 @@ function processDoc(file, outDir, kb, year) {
   const outFile = path.join(outDir, outName);
   fs.writeFileSync(outFile, fm + docBody + '\n');
 
+  // 每篇文章的纯 Markdown 版本，给 AI 读：/reading/slug.md，私密分区不生成
+  if (!kb.hidden) {
+    const mdFile = path.join(GEN_STATIC, kb.id, `${slug}.md`);
+    mkdirp(path.dirname(mdFile));
+    fs.writeFileSync(mdFile, markdownCopy({ title: info.title, date, modified, kbLabel: kb.label, stars: info.stars, url, body }));
+  }
+
   posts.push({
     outFile,
     kb: kb.id,
+    hidden: !!kb.hidden,
+    src: path.relative(ROOT, file),
     kbLabel: kb.label,
     title: info.title,
     stars: info.stars,
@@ -401,6 +436,15 @@ function processDoc(file, outDir, kb, year) {
     desc,
     cover: firstCover(body),
   });
+}
+
+// 文章的 Markdown 版本：标题、出处信息，再接正文
+function markdownCopy(p) {
+  const meta = [`作者：${config.author}`, `发布：${p.date}`];
+  if (p.modified !== p.date) meta.push(`更新：${p.modified}`);
+  meta.push(`分类：${p.kbLabel}`);
+  if (p.stars != null) meta.push(`评分：${p.stars} / 5`);
+  return [`# ${p.title}`, '', `> ${meta.join(' · ')}`, `> 原文：${config.url}${p.url}`, '', p.body, ''].join('\n');
 }
 
 // ---------- 封面图本地化 ----------
@@ -481,7 +525,11 @@ thoughts.sort((a, b) => {
   return ka < kb ? 1 : ka > kb ? -1 : 0;
 });
 
-fs.writeFileSync(path.join(GEN, 'data', 'posts.json'), JSON.stringify(posts, null, 2));
+// src 和 hidden 只在构建时用，不进页面数据
+fs.writeFileSync(
+  path.join(GEN, 'data', 'posts.json'),
+  JSON.stringify(posts, (k, v) => (k === 'src' || k === 'hidden' ? undefined : v), 2)
+);
 fs.writeFileSync(path.join(GEN, 'data', 'thoughts.json'), JSON.stringify(thoughts, null, 2));
 
 // 关于页
@@ -557,7 +605,10 @@ const llms = [
   `个人博客，内容分为${visibleKbs.map((kb) => kb.label).join('、')}。语言：简体中文。`,
   '',
   `- 关于作者：${config.url}/about`,
+  `- 作者：${config.author}`,
   `- RSS 订阅：${config.url}/rss.xml`,
+  `- 全站全文：${config.url}/llms-full.txt`,
+  `- 每篇文章都有纯 Markdown 版本：在文章网址后加 .md`,
   '',
   ...visibleKbs.flatMap((kb) => {
     if (kb.type === 'feed') {
@@ -575,6 +626,34 @@ const llms = [
   }),
 ].join('\n');
 fs.writeFileSync(path.join(ROOT, 'static', 'llms.txt'), llms);
+
+// llms-full.txt：所有公开文章的全文，外加浴室沉思（每条带锚点链接），AI 一次就能读完整站
+const publicPosts = posts.filter((p) => !p.hidden);
+const llmsFull = [
+  `# ${config.siteName}`,
+  '',
+  `> ${config.siteDescription} 作者：${config.author}。以下是全站公开文章的全文，每篇开头注明了原文链接。`,
+  '',
+  ...publicPosts.map((p) => fs.readFileSync(path.join(GEN_STATIC, p.kb, `${p.url.split('/').pop()}.md`), 'utf8').replace(/^# /, '## ')),
+  ...(thoughts.length
+    ? [
+        `## ${config.knowledgeBases.find((kb) => kb.type === 'feed').label}`,
+        '',
+        '短想法，按时间倒序。',
+        '',
+        ...thoughts.map((t) => `### ${t.date}\n\n${t.text}\n\n原文：${config.url}/thoughts#${t.id}\n`),
+      ]
+    : []),
+].join('\n');
+fs.writeFileSync(path.join(GEN_STATIC, 'llms-full.txt'), llmsFull);
+
+// IndexNow：密钥文件放在网站根目录，部署时 scripts/indexnow.js 把改动过的网址推给 Bing 等搜索引擎
+if (config.indexNowKey) fs.writeFileSync(path.join(GEN_STATIC, `${config.indexNowKey}.txt`), config.indexNowKey);
+// 源文件到网址的对照表，给 scripts/indexnow.js 用
+fs.writeFileSync(
+  path.join(GEN, 'data', 'url-map.json'),
+  JSON.stringify(Object.fromEntries(publicPosts.map((p) => [p.src, p.url])), null, 2)
+);
 
 console.log(`[prepare] 文章 ${posts.length} 篇，想法 ${thoughts.length} 条，RSS ${rssItems.length} 条`);
 }

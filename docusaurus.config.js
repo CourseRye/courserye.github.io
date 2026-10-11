@@ -101,7 +101,17 @@ const config = {
       tagName: 'link',
       attributes: { rel: 'alternate', type: 'application/rss+xml', title: site.siteName, href: '/rss.xml' },
     },
+    // 站长平台验证，在 site.config.js 里填写
+    ...(site.googleSiteVerification
+      ? [{ tagName: 'meta', attributes: { name: 'google-site-verification', content: site.googleSiteVerification } }]
+      : []),
+    ...(site.bingSiteVerification
+      ? [{ tagName: 'meta', attributes: { name: 'msvalidate.01', content: site.bingSiteVerification } }]
+      : []),
   ],
+
+  // .generated/static 里是构建时生成的文章 Markdown 版本、llms-full.txt 和 IndexNow 密钥
+  staticDirectories: ['static', '.generated/static'],
 
   themes: [
     [

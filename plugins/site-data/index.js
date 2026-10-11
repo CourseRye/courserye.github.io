@@ -53,7 +53,7 @@ module.exports = function siteDataPlugin(context) {
           const yearList = Object.keys(years)
             .sort((a, b) => b.localeCompare(a))
             .map((y) => ({ year: y, posts: years[y] }));
-          const dataPath = await createData(`grid-${kb.id}.json`, JSON.stringify({ title: kb.label, years: yearList }));
+          const dataPath = await createData(`grid-${kb.id}.json`, JSON.stringify({ title: kb.label, kbId: kb.id, years: yearList }));
           addRoute({
             path: `/${kb.id}`,
             component: '@site/src/components/ReadingGridPage.js',

@@ -80,9 +80,19 @@ content/
 
 以下都是构建时自动生成的，不用手动维护：
 
-1. sitemap.xml、robots.txt、llms.txt（给 AI 搜索引擎读的站点索引）
-2. 每篇文章的结构化数据（Article 加面包屑），读书笔记的分享配图用书封，其他页面用默认卡片
-3. hidden 的知识库：文章页 noindex，不进 sitemap，robots.txt 里 Disallow
+1. sitemap.xml、robots.txt、llms.txt（给 AI 搜索引擎读的站点索引）、llms-full.txt（全站公开文章的全文，加上浴室沉思）
+2. 每篇文章都有纯 Markdown 版本，在文章网址后加 .md 即可访问，页面头部也标出了这个地址
+3. 每篇文章的结构化数据（Article 加面包屑），作者署名用 site.config.js 里的 author；读书笔记是书评（Review），评分就是星级；修改日期取文章首次提交之后最后一次改动的时间
+4. 列表页是合集（CollectionPage），读书笔记页列出全部书目；关于页是作者主页（ProfilePage）
+5. 浴室沉思每条都有自己的链接，点日期就能拿到，形如 /thoughts#2022-03-24-100511
+6. 摘要在 120 字以内的最后一个句号处截断，AI 引用时不会停在半句
+7. 读书笔记的分享配图用书封，其他页面用默认卡片
+8. hidden 的知识库：文章页 noindex，不进 sitemap，robots.txt 里 Disallow，不进 llms.txt 和 Markdown 版本
+
+收录渠道：
+
+1. IndexNow：每次部署完成后，GitHub Actions 自动把这次改动过的文章网址推给 Bing（ChatGPT 搜索、Copilot 用的就是 Bing 的索引），密钥在 site.config.js 的 indexNowKey
+2. 站长平台：在 Google Search Console 和 Bing Webmaster Tools 注册后，把验证码填进 site.config.js 的 googleSiteVerification 和 bingSiteVerification，提交后网页会带上验证标签，再回平台点验证。验证通过后在平台里提交 sitemap.xml
 
 默认分享卡片是 static/img/social-card.png，源文件在 scripts/assets/social-card.html，改完用下面的命令重新生成：
 
