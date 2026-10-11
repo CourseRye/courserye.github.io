@@ -4,7 +4,9 @@ import PostLink from './PostLink';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useHistory } from '@docusaurus/router';
+import Head from '@docusaurus/Head';
 import Stars from './Stars';
+import collectionJsonLd from './collectionJsonLd';
 import styles from './ReadingGridPage.module.css';
 
 function BookCard({ post, index, colors, ratio, zoom }) {
@@ -120,10 +122,16 @@ export default function ReadingGridPage({ data }) {
     return () => io.disconnect();
   }, [shown]);
 
+  // 合集结构化数据列出全部年份的书，页面上虽然按年份分批渲染，爬虫一次就能拿到完整书单
+  const collection = collectionJsonLd({ siteConfig, title, path: `/${data.kbId}`, posts: years.flatMap((y) => y.posts) });
+
   let counter = 0;
 
   return (
     <Layout title={title} description={`${siteConfig.title}的${title}`}>
+      <Head>
+        <script type="application/ld+json">{JSON.stringify(collection)}</script>
+      </Head>
       <main ref={mainRef} className={`page-col ${styles.main}`}>
         {years.length === 0 && <p className={styles.empty}>这里还没有读书笔记。</p>}
         {years.slice(0, shown).map((y) => (

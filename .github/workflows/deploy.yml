@@ -31,6 +31,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
+      # 算出这次改动过的网址，部署完成后推给 IndexNow
+      - run: node scripts/indexnow.js ${{ github.event.before }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: indexnow
+          path: .generated/indexnow.json
+          if-no-files-found: ignore
 
   deploy:
     needs: build
@@ -41,3 +48,22 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # 部署完成后把改动过的网址推给 IndexNow（Bing、Yandex 等共享），失败不影响网站
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: indexnow
+        continue-on-error: true
+      - run: |
+          if [ -f indexnow.json ]; then
+            curl -sS -o /dev/null -w "IndexNow HTTP %{http_code}\n" -X POST \
+              -H "Content-Type: application/json; charset=utf-8" \
+              --data @indexnow.json https://api.indexnow.org/indexnow
+          else
+            echo "没有需要推送的网址"
+          fi

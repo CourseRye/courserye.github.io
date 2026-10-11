@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import PostLink from './PostLink';
+import collectionJsonLd from './collectionJsonLd';
 import Pagination from './Pagination';
 import styles from './PostListPage.module.css';
 
@@ -23,6 +24,12 @@ export default function PostListPage({ data }) {
     url: siteConfig.url + '/',
     inLanguage: 'zh-Hans',
   };
+  // 分区列表页（含翻页）输出合集结构化数据
+  const listPath = page === 1 ? basePath : `${basePath}/page/${page}`;
+  const pageSize = siteConfig.customFields.site.pageSize || 10;
+  const collection =
+    basePath !== '/' &&
+    collectionJsonLd({ siteConfig, title: pageTitle, path: listPath, posts, offset: (page - 1) * pageSize });
   // hidden 的知识库没有列表页，日期旁的分类名显示为普通文字，不可点击
   const hiddenKbs = new Set(
     (siteConfig.customFields.site.knowledgeBases || []).filter((kb) => kb.hidden).map((kb) => kb.id)
@@ -33,6 +40,11 @@ export default function PostListPage({ data }) {
       {isHome && (
         <Head>
           <script type="application/ld+json">{JSON.stringify(websiteJsonLd)}</script>
+        </Head>
+      )}
+      {collection && (
+        <Head>
+          <script type="application/ld+json">{JSON.stringify(collection)}</script>
         </Head>
       )}
       <main className={`page-col ${styles.main}`}>

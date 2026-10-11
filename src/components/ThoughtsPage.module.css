@@ -33,6 +33,11 @@
   font-variant-numeric: tabular-nums;
 }
 .item:hover .meta { color: var(--accent); }
+/* 日期就是这条想法的固定链接，颜色跟随日期，不加下划线 */
+.permalink, .permalink:hover { color: inherit; text-decoration: none; }
+/* 从锚点链接打开时，目标那一条显示和 hover 一样的底色 */
+.item:target .card,
+.targeted .card { background-color: #f9f9f8; }
 
 .more { display: flex; justify-content: center; padding: calc(var(--gap) * 1.5) 0 0; }
 .more button {
