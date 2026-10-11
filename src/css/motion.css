@@ -64,16 +64,21 @@ html.docs-doc-page main > .container > .row {
   animation: page-in var(--m-base) var(--m-ease) both;
 }
 
-/* 读书封面：加载后淡入，hover 放大并加深阴影 */
-.book-cover { transition: box-shadow var(--m-base) ease; }
+/* 读书封面：加载后淡入；hover 整本书抬起（位移和阴影在 ReadingGridPage.module.css） */
+.book-cover { transition: transform var(--m-base) var(--m-ease), box-shadow var(--m-base) ease; }
 .book-cover img {
   opacity: 0;
-  transition: transform var(--m-base) var(--m-ease), opacity var(--m-base) ease;
+  transition: opacity var(--m-base) ease;
 }
 .book-cover img.is-loaded { opacity: 1; }
-.book-card:hover .book-cover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+/* 读书入场：进入视口时淡入上移 8px，同一批依次错开 50ms（ReadingGridPage.js 负责加类名和延迟） */
+@keyframes book-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
+.book-card.is-pending { opacity: 0; }
+.book-card.is-revealed { animation: book-in 520ms var(--m-ease) var(--reveal-delay, 0ms) both; }
 
 /* 浴室沉思：hover 时底色淡入，日期变色 */
 .thought-card { transition: background-color var(--m-base) var(--m-ease); }
@@ -83,4 +88,5 @@ html.docs-doc-page main > .container > .row {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .book-cover img { opacity: 1; }
+  .book-card.is-pending { opacity: 1; }
 }
